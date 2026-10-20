@@ -6,9 +6,8 @@ namespace Grupparbete_Bankapp
 {
     enum AccountType
     {
-        User,
+        User = 1,
         Admin,
         Owner,
-
     }
 }
