@@ -1,29 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Channels;
 
 namespace Grupparbete_Bankapp
 {
     internal class LoanService
     {
-
-        public static bool CanLoan(decimal moneyInBank, decimal currentLoans)
+        //This will change slightly when bank account class is created so will improve upon later.
+        public static bool CanLoan(decimal moneyInBank, decimal currentLoans, decimal newLoans)
         {
-            Console.WriteLine("How much money do you want to loan(maximum x5 of your current money)?");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal newLoans))
-            {
-                Console.WriteLine("Wrong input, write a number");
-                return false;
-            }
-
+            
             if (moneyInBank < 0 || currentLoans < 0)
             {
                 Console.WriteLine("Invalid account or loan balance");
+                return false;
             }
 
             if (newLoans <= 0)
             {
-                Console.WriteLine("You can not loan a negative amount.");
+                Console.WriteLine("The loan amount must be greater than zero.");
                 return false;
             }
 
@@ -34,16 +30,14 @@ namespace Grupparbete_Bankapp
             }
 
             Console.WriteLine("Loan approved.");
+            return true;
 
-
-            decimal maxLoan = moneyInBank * 5;
-            decimal totalLoan = currentLoans + newLoans;
-            return totalLoan <= maxLoan;
-         
+           
 
         }
 
-
+        
+       
 
     }
 }
