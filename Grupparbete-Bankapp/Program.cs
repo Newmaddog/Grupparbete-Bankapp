@@ -5,6 +5,13 @@ namespace Grupparbete_Bankapp
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Hello, World!");
+
+
+            //Test SystemAccount
+            SystemAccount systemAccount = new SystemAccount();
+            systemAccount.CreateAccount();
+
             // Skapa banken
             Bank bank = new Bank("Gruppens Bank");
 

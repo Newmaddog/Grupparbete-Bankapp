@@ -6,7 +6,6 @@ namespace Grupparbete_Bankapp
 {
     internal class Account
     {
-
         private string UserName;
         private string Password;
         private string FullName;
