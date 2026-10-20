@@ -2,17 +2,31 @@
 namespace Grupparbete_Bankapp
 {
     internal class Program
+    { 
+    
+    }
+     
+        
+
+
+namespace Grupparbete_Bankapp
     {
-        static void Main(string[] args)
+        internal class Program
         {
-            // Skapa banken
-            Bank bank = new Bank("Gruppens Bank");
+            static void Main(string[] args)
+            {
+                // 1. Skapa banken
+                Bank bank = new Bank("CHAS BANK");
 
-            // Skapa menyn och skicka in banken
-            BankMeny meny = new BankMeny(bank);
+                // 2. Skapa menyn och skicka in banken
+                BankMeny meny = new BankMeny(bank);
 
-            // Starta banksystemets meny
-            meny.Start();
+                // 3. Starta menyn
+                meny.Start();
+            }
         }
     }
+
 }
+    
+
