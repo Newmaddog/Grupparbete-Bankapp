@@ -1,4 +1,5 @@
-﻿namespace Grupparbete_Bankapp
+﻿
+namespace Grupparbete_Bankapp
 {
     internal class Program
     {
@@ -10,6 +11,15 @@
             //Test SystemAccount
             SystemAccount systemAccount = new SystemAccount();
             systemAccount.CreateAccount();
+
+            // Skapa banken
+            Bank bank = new Bank("Gruppens Bank");
+
+            // Skapa menyn och skicka in banken
+            BankMeny meny = new BankMeny(bank);
+
+            // Starta banksystemets meny
+            meny.Start();
         }
     }
 }
