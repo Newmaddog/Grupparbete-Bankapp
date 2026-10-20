@@ -12,6 +12,7 @@ namespace Grupparbete_Bankapp
         public void CreateAccount()
         {
             Account account = accountCreation.CreateAccount(accountList);
+            accountList.Add(account);
         }
     }
 }
