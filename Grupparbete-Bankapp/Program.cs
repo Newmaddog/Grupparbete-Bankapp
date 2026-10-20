@@ -1,6 +1,6 @@
 ﻿namespace Grupparbete_Bankapp
 {
-    internal class Program : LoanService
+    internal class Program
     {
         static void Main(string[] args)
         {
