@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using System;
 
 namespace Grupparbete_Bankapp
 {
     public class Bank
     {
+        public string Name { get; private set; }
 
+        public Bank(string name)
+        {
+            Name = name;
+        }
 
-        
-        
-            public List<User> Users { get; set; } = new();
-        
-
-
-
-
+        public void ShowInfo()
+        {
+            Console.WriteLine("========================");
+            Console.WriteLine($"Välkommen till {Name}!");
+            Console.WriteLine("========================");
+        }
     }
 }
-
-
-

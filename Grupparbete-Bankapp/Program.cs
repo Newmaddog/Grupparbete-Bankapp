@@ -4,8 +4,14 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-            Console.WriteLine("Hejhej");
+
+            
+
+            Bank bank = new Bank("Gruppens Bank");
+            BankSystem system = new BankSystem(bank);
+
+            system.Start();
+
         }
     }
 }
