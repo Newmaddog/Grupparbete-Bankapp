@@ -8,7 +8,7 @@ namespace Grupparbete_Bankapp
     internal class LoanService
     {
         //This will change slightly when bank account class is created so will improve upon later.
-        public static bool CanLoan(decimal moneyInBank, decimal currentLoans, decimal newLoans)
+        public bool CanLoan(decimal moneyInBank, decimal currentLoans, decimal newLoans)
         {
             
             if (moneyInBank < 0 || currentLoans < 0)
