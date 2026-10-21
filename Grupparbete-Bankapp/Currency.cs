@@ -4,7 +4,14 @@ using System.Text;
 
 namespace Grupparbete_Bankapp
 {
-    internal class Transactions_Currency
+    internal enum Currency 
     {
+
+        // these are the currencies user by bank accounts
+
+        SEK,
+        EUR,
+        USD
+
     }
 }
