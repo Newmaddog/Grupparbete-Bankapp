@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Grupparbete_Bankapp
@@ -116,7 +118,7 @@ namespace Grupparbete_Bankapp
         private DateTime NextQuarter(DateTime time)
         {
             DateTime minute = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Second, 0);
-                int minutesToAdd = 15 - time.Minute % 15;
+            int minutesToAdd = 15 - time.Minute % 15;
 
             return minute.AddMinutes(minutesToAdd);
         }
@@ -176,13 +178,173 @@ namespace Grupparbete_Bankapp
 
             return RoundMoeny(received);
 
-               
+
 
 
         }
 
+        // Here I subtract waiting transfers to find how much money the customer can still use.
+        public decimal GetAvailableBalance(BankAccount account)
+        {
+            decimal available = account.Balance;
+            foreach (Transaction transaction in waiting)
+            {
+                if (transaction.FromAccount == account.Number)
+                {
+                    available = available - transaction.Amount;
+                }
+            }
+            return available;
+        }
 
 
+        public bool Transfer(Account user, int fromNumber, int toNumber, decimal amount)
+
+        {
+            DateTime createdAt = DateTime.Now;
+
+            ProcessTransactions(createdAt);
+
+            if (AmountIsValid(amount) == false || fromNumber == toNumber)
+            {
+                return false;
+            }
+            int fromIndex = FindAccountIndex(fromNumber);
+            int toIndex = FindAccountIndex(toNumber);
+
+            if (fromIndex == -1 || toIndex == -1)
+            {
+                return false;
+            }
+
+            BankAccount from = accounts[fromIndex];
+            BankAccount to = accounts[toIndex];
+
+            if (from.OwnerUsername != user.GetUserName() || amount > GetAvailableBalance(from))
+            {
+                return false;
+            }
+
+            decimal received = ConvertMoney(amount, from.Currency, to.Currency);
+
+            if (received <= 0)
+            {
+                return false;
+            }
+
+            DateTime executeAt = NextQuarter(createdAt);
+
+            Transaction transaction = new Transaction(transactions.Count + 1, user.GetUserName(), fromNumber, toNumber, amount, received, from.Currency, to.Currency, createdAt, executeAt);
+
+            // Here I save the same transfer in the queue and history, so the history updates when its status changes. 
+            waiting.Enqueue(transaction);
+            transactions.Add(transaction);
+
+            return true;
+        }
+
+
+        // Here I move the money for waiting transfers when their planned time has arrived.
+        public int ProcessTransactions(DateTime currentTime)
+        {
+            int completed = 0;
+
+            if (currentTime < nextProcessingTime)
+            {
+                return completed;
+            }
+
+            while (waiting.Count > 0)
+            {
+                Transaction transaction = waiting.Peek();
+
+                if (transaction.ExecuteAt > currentTime)
+                {
+                    break;
+                }
+                transaction = waiting.Dequeue();
+
+                int fromIndex = FindAccountIndex(transaction.FromAccount);
+                int toIndex = FindAccountIndex(transaction.ToAccount);
+
+                bool valid = true;
+                // Here I check that both accounts exist before taking money from the sender's account.
+
+                if (fromIndex == -1 || toIndex == -1)
+                {
+                    valid = false;
+                }
+                else
+                {
+                    BankAccount from = accounts[fromIndex];
+                    BankAccount to = accounts[toIndex];
+
+                    if (from.OwnerUsername != transaction.Username || from.Currency != transaction.FromCurrency || to.Currency != transaction.ToCurrency)
+                    {
+                        valid = false;
+                    }
+                    else if (from.Withdraw(transaction.Amount) == false)
+                    {
+                        valid = false;
+                    }
+                    else
+                    {
+                        to.Deposit(transaction.RecievedAmount);
+
+                    }
+
+                }
+                if (valid == true)
+                {
+                    transaction.Status = TransactionStatus.Completed;
+                    completed = completed + 1;
+                }
+                else
+                {
+                    transaction.Status = TransactionStatus.Failed;
+                }
+
+
+            }
+
+            nextProcessingTime = NextQuarter(currentTime);
+            return completed;
+
+        }
+
+        // Here I get transfers to and from the customer's accounts, with each transfer listed only once.
+        public List<Transaction> GetHistory(Account user)
+        {
+            List<Transaction> result = new List<Transaction>();
+
+            foreach (Transaction transaction in transactions)
+            {
+                bool ownsAccount = false;
+                int fromIndex = FindAccountIndex(transaction.FromAccount);
+                int toIndex = FindAccountIndex(transaction.ToAccount);
+
+                if (fromIndex != -1)
+                {
+                    if (accounts[fromIndex].OwnerUsername == user.GetUserName())
+                    {
+                        ownsAccount = true;
+                    }
+                }
+
+                if (toIndex != -1)
+                {
+                    if (accounts[toIndex].OwnerUsername == user.GetUserName())
+                        ownsAccount = true;
+                }
+                if (ownsAccount == true)
+                {
+                    result.Add(transaction);
+                }
+
+            }
+
+            return result;
+        }
 
 
     }
