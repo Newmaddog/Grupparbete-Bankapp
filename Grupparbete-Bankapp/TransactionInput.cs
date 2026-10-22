@@ -207,7 +207,7 @@ namespace Grupparbete_Bankapp
 
                 if (valid == false)
                 {
-                    Console.WriteLine("Skriv ett tal, till exempel 100,50 eller 100.50. Använd inga tusentalsavskiljare.");
+                    Console.WriteLine("Skriv ett tal, till exempel 100,50 eller 100.50. Skriv tusen som 1000.");
                 }
             }
 

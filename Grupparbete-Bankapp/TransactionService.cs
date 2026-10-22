@@ -289,7 +289,7 @@ namespace Grupparbete_Bankapp
                     }
                     else
                     {
-                        to.Deposit(transaction.RecievedAmount);
+                        to.Deposit(transaction.ReceivedAmount);
 
                     }
 

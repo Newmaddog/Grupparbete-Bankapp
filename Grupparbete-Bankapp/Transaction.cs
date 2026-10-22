@@ -13,7 +13,7 @@ namespace Grupparbete_Bankapp
         public int FromAccount { get; set; }
         public int ToAccount { get; set; }
         public decimal Amount { get; set; }
-        public decimal RecievedAmount { get; set; }
+        public decimal ReceivedAmount { get; set; }
         public Currency FromCurrency { get; set; }
         public Currency ToCurrency { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -27,7 +27,7 @@ namespace Grupparbete_Bankapp
             FromAccount = fromAccount;
             ToAccount = toAccount;
             Amount = amount;
-            RecievedAmount = receivedAmount;
+            ReceivedAmount = receivedAmount;
             FromCurrency = fromCurrency;
             ToCurrency = toCurrency;
 
