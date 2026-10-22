@@ -12,6 +12,8 @@ namespace Grupparbete_Bankapp
         private string FullName;
         private AccountType AccountType;
 
+        List<Bank> banks = new List<Bank>();
+
        
         public Account(string userName,string password,string fullName,AccountType accountType)
         {
