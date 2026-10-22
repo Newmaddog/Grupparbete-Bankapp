@@ -6,6 +6,7 @@ namespace Grupparbete_Bankapp
 {
     internal class InterestCalculator
     {
+        //method for calculating interest
         public decimal CalculateInterest(decimal amount, decimal yearlyInterestRate, int months)
         
         {
@@ -19,7 +20,7 @@ namespace Grupparbete_Bankapp
                 throw new ArgumentOutOfRangeException("Interest has to be between 0 and 100");
             }
 
-            if (months < 1 || months > 600)
+            if (months < 1 || months > 60)
             {
                 throw new ArgumentOutOfRangeException("Time has to be between 1-600 months");
             }
