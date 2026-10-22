@@ -11,7 +11,9 @@ namespace Grupparbete_Bankapp
 
         public void CreateAccount()
         {
-            Account account = accountCreation.CreateAccount(accountList);
+            Account? account = accountCreation.CreateAccount(accountList);
+            if (account != null)
+                accountList.Add(account);
         }
     }
 }

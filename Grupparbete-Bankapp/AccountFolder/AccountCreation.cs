@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Text;
 
 namespace Grupparbete_Bankapp
 {
     internal class AccountCreation
     {
-        public Account CreateAccount(List<Account> accountList)
+        public Account? CreateAccount(List<Account> accountList)
         {
             Console.WriteLine("Creating new Account");
             string userName = "";
@@ -18,16 +19,9 @@ namespace Grupparbete_Bankapp
             fullName = SetFullName();
             accountType = SetAccountType();
 
-            Console.WriteLine($"UserName: {userName}\nPassword: {passWord}\nFullName: {fullName}\nAccountType: {accountType}");
+            Account? account = ConfirmCreateAccount(userName, passWord, fullName, accountType, accountList);
 
-            Console.ReadLine();
 
-            Account account = new Account();
-
-            account.SetUserName(userName);
-            account.SetPassWord(passWord);
-            account.SetFullName(fullName);
-            account.SetAccountType(accountType);
 
             return account;
         }
@@ -112,11 +106,52 @@ namespace Grupparbete_Bankapp
             return accountType;
         }
 
-        //private Account ConfirmCreateAccount(string userName, string passWord,
-        //   string fullName, AccountType accountType)
-        //{
+        private Account? ConfirmCreateAccount(string userName, string password,
+           string fullName, AccountType accountType, List<Account> accountList)
+        {
+            int menuChoice = -1;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine($"Confirmation process\n");
+                Console.WriteLine($"UserName: {userName}\nPassword: {password}\nFullName: {fullName}\nAccountType: {accountType}\n");
+                Console.WriteLine($"press 0 to cancel\npress 1 to confirm Account \n2: change UserName\n3: change password\n4: change fullname\n5 change AccountType");
 
-        //}
+                if (!int.TryParse(Console.ReadLine(), out menuChoice))
+                {
+                    Console.WriteLine("Invalid input. Press Enter to try again.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    menuChoice = -1;
+                    continue;
+                }
+
+                switch (menuChoice)
+                {
+                    case 2:
+                        userName = SetUserName(accountList);
+                        break;
+                    case 3:
+                        password = SetPassword();
+                        break;
+                    case 4:
+                        fullName = SetFullName();
+                        break;
+                    case 5:
+                        accountType = SetAccountType();
+                        break;
+                }
+
+            } while (menuChoice is not (0 or 1));
+
+            if (menuChoice == 0)
+            {
+                return null;
+            }
+
+            Account account = new(userName, password, fullName, accountType);
+            return account;
+        }
 
     }
 }
