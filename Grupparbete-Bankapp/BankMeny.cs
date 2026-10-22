@@ -36,6 +36,25 @@ namespace Grupparbete_Bankapp
                         Pause();
                         break;
 
+                    case "2":
+                        BankAccount newAccount = bank.OpenNewAccount();
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Nytt konto har öppnats!");
+                        Console.WriteLine($"Kontonummer: {newAccount.AccountNumber}");
+                        Console.WriteLine($"Saldo: {newAccount.Balance} kr");
+                        Console.ResetColor();
+
+                        Pause();
+                        break;
+
+                    // NYTT: Menyval 3 – visar alla bankkonton
+                    case "3":
+                        bank.ShowAllAccounts(); // Anropar metoden i Bank.cs
+                        Pause();
+                        break;
+
+
                     case "0":
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Tack för att du besökte CHAS BANK!");
@@ -59,12 +78,12 @@ namespace Grupparbete_Bankapp
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
 
-            Console.WriteLine(@" 
-   _____ _   _    _    ____  
-  / ____| | | |  / \  / ___| 
- | |    | |_| | / _ \ \___ \ 
+            Console.WriteLine(@"
+   _____ _   _    _    ____
+  / ____| | | |  / \  / ___|
+ | |    | |_| | / _ \ \___ \
  | |____|  _  |/ ___ \ ___) |
-  \_____|_| |_/_/   \_\____/ 
+  \_____|_| |_/_/   \_\____/
 ");
 
             Console.WriteLine("================================");
@@ -85,6 +104,8 @@ namespace Grupparbete_Bankapp
             Console.ResetColor();
 
             Console.WriteLine("1. Visa bankinformation");
+            Console.WriteLine("2. Öppna nytt konto");
+            Console.WriteLine("3. Visa alla konton");
             Console.WriteLine("0. Avsluta");
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
