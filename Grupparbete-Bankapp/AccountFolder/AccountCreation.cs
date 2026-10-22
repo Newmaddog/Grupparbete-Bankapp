@@ -32,10 +32,11 @@ namespace Grupparbete_Bankapp
                 //Constants.WriteExitText();
                 Console.Write("UserName: ");
                 userName = Console.ReadLine() ?? "";
-                if (Constants.NotUsableWords.Contains(userName))
+                if (Constants.IsNotUsableWordsUtilize(userName))
                 {
                     Console.Clear();
                     Console.WriteLine($"You can't have {userName} as a UserName. please try again");
+                    userName = "";
                     continue;
                 }
                 if (accountList.Any(a => a.GetUserName() == userName))

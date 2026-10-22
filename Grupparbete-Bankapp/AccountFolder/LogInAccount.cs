@@ -30,9 +30,9 @@ namespace Grupparbete_Bankapp
             {
                 Constants.WriteExitText();
                 Console.Write($"Write your UserName please: ");
-                tempUserName = Console.ReadLine();
+                tempUserName = Console.ReadLine() ?? "";
 
-                if (Constants.NotUsableWords.Contains(tempUserName))
+                if (Constants.IsNotUsableWordsUtilize(tempUserName))
                 {
                     return null;
                 }
@@ -69,7 +69,7 @@ namespace Grupparbete_Bankapp
                 Console.Write($"\nLog in with Password: ");
                 attemptPasword = Console.ReadLine() ?? "";
 
-                if (Constants.NotUsableWords.Contains(attemptPasword))
+                if (Constants.IsNotUsableWordsUtilize(attemptPasword))
                 {
                     Console.Clear();
                     Console.WriteLine("Cancel Log in");
