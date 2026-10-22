@@ -6,11 +6,23 @@ namespace Grupparbete_Bankapp
     public class BankMeny
     {
         private Bank bank;
+        private TransactionInput transactionInput;
 
         public BankMeny(Bank bank)
         {
             this.bank = bank;
+            transactionInput = new TransactionInput(bank.Transactions);
         }
+
+        // Here I open the transaction menu for the user who is logged in.
+
+        internal void ShowTransactions(Account user)
+        {
+            TransactionMenu transactionMenu = new TransactionMenu(bank.Transactions);
+
+            transactionMenu.Show(user);
+        }
+
 
         public void Start()
         {
@@ -31,7 +43,8 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine("0. Avsluta");
 
                 Console.Write("Välj: ");
-                string choice = Console.ReadLine() ?? "";
+                // Here I read the menu choice while checking if waiting transfers are ready to run.
+                string choice = transactionInput.ReadText("");
 
                 if (choice == "1")
                 {
