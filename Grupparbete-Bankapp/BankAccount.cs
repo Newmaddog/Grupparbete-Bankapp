@@ -7,6 +7,8 @@ namespace Grupparbete_Bankapp
 {
     public class BankAccount
     {
+        private int nextAccountNumber;
+
         public int AccountNumber { get; private set; }
         public decimal Balance { get; private set; }
 
@@ -16,6 +18,11 @@ namespace Grupparbete_Bankapp
             AccountNumber = accountNumber;
             Balance = 0;
             Currency = currency;
+        }
+
+        public BankAccount(int nextAccountNumber)
+        {
+            this.nextAccountNumber = nextAccountNumber;
         }
     }
 }
