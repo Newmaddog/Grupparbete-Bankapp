@@ -11,6 +11,7 @@ namespace Grupparbete_Bankapp
             //Test SystemAccount
             SystemAccount systemAccount = new SystemAccount();
             systemAccount.CreateAccount();
+            systemAccount.LogInAccount();
 
             // Skapa banken
             Bank bank = new Bank("Gruppens Bank");
