@@ -10,6 +10,7 @@ namespace Grupparbete_Bankapp
 
             //Test SystemAccount
             SystemAccount systemAccount = new SystemAccount();
+            systemAccount.AccountList();
             systemAccount.CreateAccount();
             systemAccount.LogInAccount();
 
