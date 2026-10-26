@@ -18,11 +18,7 @@ namespace Grupparbete_Bankapp
             passWord = SetPassword();
             fullName = SetFullName();
             accountType = SetAccountType();
-
             Account? account = ConfirmCreateAccount(userName, passWord, fullName, accountType, accountList);
-
-
-
             return account;
         }
 
@@ -32,8 +28,17 @@ namespace Grupparbete_Bankapp
 
             do
             {
+                //not sure yet if i will use it
+                //Constants.WriteExitText();
                 Console.Write("UserName: ");
                 userName = Console.ReadLine() ?? "";
+                if (Constants.IsNotUsableWordsUtilize(userName))
+                {
+                    Console.Clear();
+                    Console.WriteLine($"You can't have {userName} as a UserName. please try again");
+                    userName = "";
+                    continue;
+                }
                 if (accountList.Any(a => a.GetUserName() == userName))
                 {
                     if (userName == "")

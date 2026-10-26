@@ -9,7 +9,9 @@ namespace Grupparbete_Bankapp
         {
             // Skapa systemkontot
             SystemAccount systemAccount = new SystemAccount();
+            systemAccount.AccountList();
             systemAccount.CreateAccount();
+            systemAccount.LogInAccount();
 
             // Skapa banken
             Bank bank = new Bank("CHAS BANK");
