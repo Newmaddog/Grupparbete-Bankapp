@@ -31,6 +31,11 @@ namespace Grupparbete_Bankapp
 
                     case 2:
                         ActiveAccount = systemAccount.LogInAccount();
+                        if (systemAccount.SystemBlockStatus())
+                        {
+                            Console.WriteLine("Error to many attempt system block!!!");
+                            System.Environment.Exit(1);
+                        }
                         break;
                     case 3:
                         systemAccount.CreateAccountAsAdmin();
@@ -43,36 +48,16 @@ namespace Grupparbete_Bankapp
                             Console.WriteLine("Log in first");
                             continue;
                         }
-                        // Skapa menyn och skicka in banken
+                        // Skapa menyn och skicka in Account
+                        // Starta menyn
                         bankMeny.ShowMenu(ActiveAccount);
-                        break; 
+                        break;
                     default:
                         break;
                 }
 
 
-
-
-
-                if (systemAccount.SystemBlockStatus())
-                {
-                    Console.WriteLine("Error to many attempt system block!!!");
-                    System.Environment.Exit(1);
-                }
-
-                // Skapa banken
-
-               
-
-
-                // Starta menyn
-
             }
-
-
-
-
-
         }
     }
 }
