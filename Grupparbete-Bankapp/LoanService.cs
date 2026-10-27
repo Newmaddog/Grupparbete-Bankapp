@@ -97,7 +97,7 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("Loan approved!");
             Console.WriteLine($"Loan amount: {loan.Amount:N2}");
             Console.WriteLine($"Loan duration in months: {loan.TotalMonths}");
-            Console.WriteLine($"Interest rate: {loan.YearlyInterestRate}");
+            Console.WriteLine($"Interest rate: {loan.YearlyInterestRate}%");
             Console.WriteLine($"Total repayment: {loan.TotalRepayment:N2}");
             Console.WriteLine($"Total interest: {loan.TotalInterest:N2}");
 
