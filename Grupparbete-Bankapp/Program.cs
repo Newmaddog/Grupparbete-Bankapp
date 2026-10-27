@@ -1,14 +1,13 @@
 ﻿
+using System;
+
 namespace Grupparbete_Bankapp
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-
-
-            //Test SystemAccount
+            // Skapa systemkontot
             SystemAccount systemAccount = new SystemAccount();
             systemAccount.AccountList();
             systemAccount.CreateAccount();
@@ -21,13 +20,15 @@ namespace Grupparbete_Bankapp
             }
 
             // Skapa banken
-            Bank bank = new Bank("Gruppens Bank");
+            Bank bank = new Bank("CHAS BANK");
 
             // Skapa menyn och skicka in banken
-            BankMeny meny = new BankMeny(bank);
+            BankMeny bankMeny = new BankMeny(bank);
+            bankMeny.ShowMenu();
 
-            // Starta banksystemets meny
-            meny.Start();
+
+            // Starta menyn
+         
         }
     }
 }

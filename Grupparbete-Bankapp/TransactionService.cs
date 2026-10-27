@@ -23,7 +23,7 @@ namespace Grupparbete_Bankapp
 
         //use the bank account list so manoy is stored in one place
 
-        public TransactionService(List<BankAccount> accouts)
+        public TransactionService(List<BankAccount> accounts)
         {
             this.accounts = accounts;
 
@@ -97,6 +97,8 @@ namespace Grupparbete_Bankapp
             excangeRates[Currency.EUR] = euro;
             excangeRates[Currency.USD] = dollar;
 
+            ratesUpdatedOn = DateTime.Today;
+
             return true;
         }
 
@@ -117,10 +119,21 @@ namespace Grupparbete_Bankapp
         // Here I find the next quarter-hour when transfers should run.
         private DateTime NextQuarter(DateTime time)
         {
-            DateTime minute = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Second, 0);
-            int minutesToAdd = 15 - time.Minute % 15;
+            DateTime minute = new DateTime(
+                time.Year,
+                 time.Month,
+                 time.Day,
+                 time.Hour,
+                 time.Minute,
+                 0
 
-            return minute.AddMinutes(minutesToAdd);
+
+                );
+
+            int minuteToAdd = 15 - time.Minute % 15;
+
+            return minute.AddMinutes(minuteToAdd);
+
         }
 
         // Here I check that the amount is over 0, no more than 100000 and has up to two decimals.
@@ -130,13 +143,13 @@ namespace Grupparbete_Bankapp
             {
                 return false;
             }
+
             if ((amount * 100) % 1 != 0)
             {
                 return false;
             }
-            return false;
 
-
+            return true;
         }
 
         // Here I round the amount to two decimals

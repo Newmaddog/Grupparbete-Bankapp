@@ -1,47 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿
+using System;
 
 namespace Grupparbete_Bankapp
 {
-    // This is an account with money. Account is the group login account. 
-    internal class BankAccount
+    public class BankAccount
     {
-
+        // Account number
         public int Number { get; set; }
+
+        // Account owner
         public string OwnerUsername { get; set; }
 
+        // Account name
         public string Name { get; set; }
 
+        // Account currency
         public Currency Currency { get; set; }
 
+        // Account type: Regular or Savings
+        public BankAccountType AccountType { get; set; }
+
+        // Balance is stored privately
         private decimal balance;
 
+        // Other classes can read the balance
         public decimal Balance
         {
             get
             {
                 return balance;
-
             }
-
         }
 
-
-        // the group uses username to connect customers to their bank account
-        public BankAccount(int number, string ownerUsername, string name, Currency currency, decimal startingBalance)
+        // Creates a new bank account
+        public BankAccount(
+            int number,
+            string ownerUsername,
+            string name,
+            BankAccountType accountType,
+            Currency currency,
+            decimal startingBalance)
         {
-
             Number = number;
             OwnerUsername = ownerUsername;
             Name = name;
+            AccountType = accountType;
             Currency = currency;
             balance = startingBalance;
-
         }
 
-        // only positive amount can be added
+        // Deposits money if the amount is positive
         public bool Deposit(decimal amount)
         {
             if (amount <= 0)
@@ -51,11 +59,9 @@ namespace Grupparbete_Bankapp
 
             balance = balance + amount;
             return true;
-            
         }
 
-        //check the amount and balance before taking money out
-
+        // Withdraws money if the amount is positive and the balance is sufficient
         public bool Withdraw(decimal amount)
         {
             if (amount <= 0 || amount > balance)
@@ -66,7 +72,5 @@ namespace Grupparbete_Bankapp
             balance = balance - amount;
             return true;
         }
-
-
     }
 }

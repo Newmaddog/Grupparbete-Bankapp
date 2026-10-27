@@ -35,8 +35,8 @@ namespace Grupparbete_Bankapp
 
             ExecuteAt = excuteAt;
 
-            Status = TransactionStatus.Completed;
-                
+            Status = TransactionStatus.Pending;
+
 
         }
 
