@@ -97,7 +97,7 @@ namespace Grupparbete_Bankapp
         public override string ToString()
         {
 
-            return $"UserName: {UserName}\nPassword: {Password}\nFullName: {FullName}\nAccountType: {AccountType}";
+            return $"UserName: {UserName}\nFullName: {FullName}\nAccountType: {AccountType}";
         }
 
     }

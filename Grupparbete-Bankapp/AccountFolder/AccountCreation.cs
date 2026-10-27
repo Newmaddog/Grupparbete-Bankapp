@@ -140,7 +140,7 @@ namespace Grupparbete_Bankapp
             {
                 Console.Clear();
                 Console.WriteLine($"Confirmation process\n");
-                Console.WriteLine($"UserName: {userName}\nPassword: {password}\nFullName: {fullName}\nAccountType: {accountType}\n");
+                Console.WriteLine($"UserName: {userName}\nFullName: {fullName}\nAccountType: {accountType}\n");
                 Console.WriteLine($"press 0 to cancel\npress 1 to confirm Account \n2: change UserName\n3: change password\n4: change fullname\n5 change AccountType");
 
                 if (!int.TryParse(Console.ReadLine(), out menuChoice))
