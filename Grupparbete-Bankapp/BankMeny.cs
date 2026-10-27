@@ -56,7 +56,7 @@ namespace Grupparbete_Bankapp
                 }
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("  0. Exit");
+                Console.WriteLine("  0. Log out");
                 Console.ResetColor();
 
                 Console.WriteLine("--------------------------------");
@@ -111,8 +111,7 @@ namespace Grupparbete_Bankapp
                     case "0":
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine();
-                        Console.WriteLine("Thank you for using CHAS BANK!");
-                        Console.WriteLine("Goodbye!");
+                        Console.WriteLine("You are now logged out.");
                         Console.ResetColor();
                         running = false;
                         break;
