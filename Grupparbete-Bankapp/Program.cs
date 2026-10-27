@@ -14,6 +14,12 @@ namespace Grupparbete_Bankapp
             systemAccount.CreateAccount();
             systemAccount.LogInAccount();
 
+            if (systemAccount.SystemBlockStatus())
+            {
+                Console.WriteLine("Error to many attempt system block!!!");
+                System.Environment.Exit(1);
+            }
+
             // Skapa banken
             Bank bank = new Bank("Gruppens Bank");
 

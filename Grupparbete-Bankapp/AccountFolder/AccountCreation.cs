@@ -61,7 +61,7 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine("PassWord, password most be longer then 4");
                 Console.Write("Password: ");
-                passWord = Console.ReadLine();
+                passWord = Console.ReadLine() ?? "";
 
                 if (passWord.Length < 5)
                 {
