@@ -3,7 +3,7 @@ using System;
 
 namespace Grupparbete_Bankapp
 {
-    public class BankMeny
+    internal class BankMeny
     {
         private readonly Bank bank;
 
@@ -12,27 +12,37 @@ namespace Grupparbete_Bankapp
             this.bank = bank;
         }
 
-        internal void ShowTransactions(Account user)
+        public void ShowMenu()
         {
-            TransactionMenu transactionMenu =
-                new TransactionMenu(bank.Transactions);
-
-            transactionMenu.Show(user);
-        }
-
-        public void Start()
-        {
-            ShowLogo();
-            bank.ShowInfo();
-
             bool running = true;
+
+            // Show the bank logo when entering the menu
+            ShowLogo();
 
             while (running)
             {
-                ShowMenu();
+                Console.ResetColor();
+                Console.WriteLine();
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write("Välj ett alternativ: ");
+                Console.WriteLine("================================");
+                Console.WriteLine("           MAIN MENU");
+                Console.WriteLine("================================");
+                Console.ResetColor();
+
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("  1. Show bank information");
+                Console.WriteLine("  2. Open new account");
+                Console.WriteLine("  3. Show all bank accounts");
+                Console.WriteLine("  4. Show accounts for a user");
+                Console.WriteLine("  5. Transactions");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("  0. Exit");
+                Console.ResetColor();
+
+                Console.WriteLine("--------------------------------");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("Choose an option: ");
                 Console.ResetColor();
 
                 string choice = Console.ReadLine() ?? "";
@@ -41,236 +51,179 @@ namespace Grupparbete_Bankapp
                 {
                     case "1":
                         bank.ShowInfo();
-                        Pause();
                         break;
 
                     case "2":
-                        {
-                            Console.Write("Ange användarnamn: ");
-                            string username = Console.ReadLine() ?? "";
-
-                            Console.Write("Ange kontonamn: ");
-                            string accountName = Console.ReadLine() ?? "";
-
-                            if (string.IsNullOrWhiteSpace(username) ||
-                                string.IsNullOrWhiteSpace(accountName))
-                            {
-                                Console.WriteLine(
-                                    "Användarnamn och kontonamn måste anges.");
-                                Pause();
-                                break;
-                            }
-
-                            Console.WriteLine("\nVälj valuta:");
-                            Console.WriteLine("1. SEK");
-                            Console.WriteLine("2. EUR");
-                            Console.WriteLine("3. USD");
-                            Console.Write("Val: ");
-
-                            string currencyChoice = Console.ReadLine() ?? "";
-
-                            Currency? currency = currencyChoice switch
-                            {
-                                "1" => Currency.SEK,
-                                "2" => Currency.EUR,
-                                "3" => Currency.USD,
-                                _ => null
-                            };
-
-                            if (currency == null)
-                            {
-                                Console.WriteLine("Ogiltigt valutaval.");
-                                Pause();
-                                break;
-                            }
-
-                            BankAccount newAccount = bank.OpenNewAccount(
-                                username,
-                                accountName,
-                                currency.Value
-                            );
-
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine("\nNytt konto har öppnats!");
-                            Console.WriteLine($"Kontonummer: {newAccount.Number}");
-                            Console.WriteLine($"Ägare: {newAccount.OwnerUsername}");
-                            Console.WriteLine($"Kontonamn: {newAccount.Name}");
-                            Console.WriteLine(
-                                $"Saldo: {newAccount.Balance} {newAccount.Currency}");
-                            Console.ResetColor();
-
-                            Pause();
-                            break;
-                        }
+                        OpenNewAccount();
+                        break;
 
                     case "3":
-                        {
-                            Console.Write("Ange ditt användarnamn: ");
-                            string username = Console.ReadLine() ?? "";
-
-                            if (string.IsNullOrWhiteSpace(username))
-                            {
-                                Console.WriteLine("Användarnamn måste anges.");
-                                Pause();
-                                break;
-                            }
-
-                            bank.ShowAccountsForUser(username);
-                            Pause();
-                            break;
-                        }
+                        bank.ShowAllAccounts();
+                        break;
 
                     case "4":
-                        {
-                            Console.Write(
-                                "Ange ditt användarnamn för transaktioner: ");
-
-                            string username = Console.ReadLine() ?? "";
-
-                            if (string.IsNullOrWhiteSpace(username))
-                            {
-                                Console.WriteLine("Användarnamn måste anges.");
-                                Pause();
-                                break;
-                            }
-
-                            Account user = new Account(
-                                username,
-                                "",
-                                username,
-                                AccountType.User
-                            );
-
-                            ShowTransactions(user);
-                            break;
-                        }
+                        Console.Write("Enter username: ");
+                        string username = Console.ReadLine() ?? "";
+                        bank.ShowAccountsForUser(username);
+                        break;
 
                     case "5":
-                        {
-                            DepositMoney();
-                            break;
-                        }
+                        ShowTransactionsMenu();
+                        break;
 
                     case "0":
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine(
-                            "Tack för att du besökte CHAS BANK!");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine();
+                        Console.WriteLine("Thank you for using CHAS BANK!");
+                        Console.WriteLine("Goodbye!");
                         Console.ResetColor();
-
                         running = false;
                         break;
 
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Ogiltigt val. Försök igen.");
+                        Console.WriteLine("Invalid choice. Please try again.");
                         Console.ResetColor();
-                        Pause();
                         break;
                 }
             }
         }
 
-        private void DepositMoney()
-        {
-            Console.Write("Ange kontonummer: ");
-
-            if (!int.TryParse(Console.ReadLine(), out int accountNumber))
-            {
-                Console.WriteLine("Ogiltigt kontonummer.");
-                Pause();
-                return;
-            }
-
-            Console.Write("Ange belopp att sätta in: ");
-
-            if (!decimal.TryParse(
-                    Console.ReadLine(),
-                    System.Globalization.NumberStyles.Number,
-                    System.Globalization.CultureInfo.CurrentCulture,
-                    out decimal amount) || amount <= 0)
-            {
-                Console.WriteLine("Ange ett giltigt belopp.");
-                Pause();
-                return;
-            }
-
-            BankAccount? account = null;
-
-            foreach (BankAccount item in bank.BankAccounts)
-            {
-                if (item.Number == accountNumber)
-                {
-                    account = item;
-                    break;
-                }
-            }
-
-            if (account == null)
-            {
-                Console.WriteLine("Kontot hittades inte.");
-            }
-            else if (account.Deposit(amount))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nInsättningen lyckades!");
-                Console.WriteLine($"Kontonummer: {account.Number}");
-                Console.WriteLine(
-                    $"Nytt saldo: {account.Balance} {account.Currency}");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.WriteLine("Insättningen misslyckades.");
-            }
-
-            Pause();
-        }
-
         private void ShowLogo()
         {
             Console.Clear();
+
             Console.ForegroundColor = ConsoleColor.Cyan;
 
-            Console.WriteLine(@"
-
-/ | | | |  / \  / |
-| |    | || | / _ \ _
-| ||  _  |/ ___ \ ) |
-___|| |//   _____/
-");
-
-            Console.WriteLine("================================");
-            Console.WriteLine("          CHAS BANK");
-            Console.WriteLine("================================");
-
-            Console.ResetColor();
-            Console.WriteLine();
-        }
-
-        private void ShowMenu()
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine();
-            Console.WriteLine("========== HUVUDMENY ==========");
-            Console.ResetColor();
-
-            Console.WriteLine("1. Visa bankinformation");
-            Console.WriteLine("2. Öppna nytt konto");
-            Console.WriteLine("3. Visa mina bankkonton");
-            Console.WriteLine("4. Transaktioner");
-            Console.WriteLine("5. Sätt in pengar");
-            Console.WriteLine("0. Avsluta");
+            Console.WriteLine(
+                @"   ______ _   _    _    ____   ____    _    _   _ _  __"
+            );
+            Console.WriteLine(
+                @"  / ___/ | | |  / \  / ___| / ___|  / \  | \ | | |/ /"
+            );
+            Console.WriteLine(
+                @" | |   | |_| | / _ \| |    | |     / _ \ |  \| | ' /"
+            );
+            Console.WriteLine(
+                @" | |___|  _  |/ ___ \ |___ | |___ / ___ \| |\  | . \"
+            );
+            Console.WriteLine(
+                @"  \____|_| |_/_/   \_\____| \____/_/   \_\_| \_|_|\_\"
+            );
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("===============================");
+            Console.WriteLine();
+            Console.WriteLine("======================================================");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("                    CHAS BANK");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("======================================================");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("          Welcome to your banking experience!");
             Console.ResetColor();
+
+            Console.WriteLine();
         }
 
-        private void Pause()
+        private void OpenNewAccount()
         {
             Console.WriteLine();
-            Console.Write("Tryck Enter för att fortsätta...");
-            Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("========== OPEN NEW ACCOUNT ==========");
+            Console.ResetColor();
+
+            Console.Write("Enter username: ");
+            string username = Console.ReadLine() ?? "";
+
+            Console.Write("Enter account name: ");
+            string accountName = Console.ReadLine() ?? "";
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Select account type:");
+            Console.ResetColor();
+
+            Console.WriteLine("1. Regular account");
+            Console.WriteLine("2. Savings account");
+            Console.Write("Choose an option: ");
+
+            string accountTypeChoice = Console.ReadLine() ?? "";
+
+            BankAccountType? accountType = accountTypeChoice switch
+            {
+                "1" => BankAccountType.Regular,
+                "2" => BankAccountType.Savings,
+                _ => null
+            };
+
+            if (accountType == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid account type.");
+                Console.ResetColor();
+                return;
+            }
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Select currency:");
+            Console.ResetColor();
+
+            Console.WriteLine("1. SEK");
+            Console.WriteLine("2. EUR");
+            Console.WriteLine("3. USD");
+            Console.Write("Choose an option: ");
+
+            string currencyChoice = Console.ReadLine() ?? "";
+
+            Currency? currency = currencyChoice switch
+            {
+                "1" => Currency.SEK,
+                "2" => Currency.EUR,
+                "3" => Currency.USD,
+                _ => null
+            };
+
+            if (currency == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid currency.");
+                Console.ResetColor();
+                return;
+            }
+
+            BankAccount newAccount = bank.OpenNewAccount(
+                username,
+                accountName,
+                currency.Value,
+                accountType.Value
+            );
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Account created successfully!");
+            Console.ResetColor();
+
+            Console.WriteLine($"Account number: {newAccount.Number}");
+            Console.WriteLine($"Account name:   {newAccount.Name}");
+            Console.WriteLine($"Account type:   {newAccount.AccountType}");
+            Console.WriteLine($"Currency:       {newAccount.Currency}");
+            Console.WriteLine($"Balance:        {newAccount.Balance}");
+
+            Console.WriteLine();
+        }
+
+        private void ShowTransactionsMenu()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("========== TRANSACTIONS ==========");
+            Console.ResetColor();
+
+            Console.WriteLine(
+                "Your existing TransactionMenu should be connected here."
+            );
         }
     }
 }

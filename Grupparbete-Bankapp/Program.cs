@@ -17,10 +17,12 @@ namespace Grupparbete_Bankapp
             Bank bank = new Bank("CHAS BANK");
 
             // Skapa menyn och skicka in banken
-            BankMeny meny = new BankMeny(bank);
+            BankMeny bankMeny = new BankMeny(bank);
+            bankMeny.ShowMenu();
+
 
             // Starta menyn
-            meny.Start();
+         
         }
     }
 }

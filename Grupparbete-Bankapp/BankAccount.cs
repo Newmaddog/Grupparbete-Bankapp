@@ -1,62 +1,29 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-/*
-    GAMLA VERSIONEN – SPARAD SOM KOMMENTAR
-
-    Vi behåller den tillfälligt så att du kan jämföra
-    med gruppens befintliga BankAccount-klass.
 
 namespace Grupparbete_Bankapp
 {
     public class BankAccount
     {
-        private int nextAccountNumber;
-
-        public int AccountNumber { get; private set; }
-
-        public decimal Balance { get; private set; }
-
-        public Currency Currency { get; private set; }
-
-        public Bankaccount(int accountNumber, Currency currency)
-        {
-            AccountNumber = accountNumber;
-            Balance = 0;
-            Currency = currency;
-        }
-
-        public BankAccount(int nextAccountNumber)
-        {
-            this.nextAccountNumber = nextAccountNumber;
-        }
-    }
-}
-*/
-
-namespace Grupparbete_Bankapp
-{
-    // GRUPPENS AKTIVA BANKKONTO
-    public class BankAccount
-    {
-        // Kontots nummer
+        // Account number
         public int Number { get; set; }
 
-        // Användaren som äger kontot
+        // Account owner
         public string OwnerUsername { get; set; }
 
-        // Kontots namn, exempelvis "Sparkonto"
+        // Account name
         public string Name { get; set; }
 
-        // Kontots valuta, exempelvis SEK eller USD
+        // Account currency
         public Currency Currency { get; set; }
 
-        // Saldo lagras privat så att det inte kan ändras direkt utifrån
+        // Account type: Regular or Savings
+        public BankAccountType AccountType { get; set; }
+
+        // Balance is stored privately
         private decimal balance;
 
-        // Andra klasser kan läsa saldot
+        // Other classes can read the balance
         public decimal Balance
         {
             get
@@ -65,22 +32,24 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        // Skapar ett konto med kontonummer, ägare, namn, valuta och startsaldo
+        // Creates a new bank account
         public BankAccount(
             int number,
             string ownerUsername,
             string name,
+            BankAccountType accountType,
             Currency currency,
             decimal startingBalance)
         {
             Number = number;
             OwnerUsername = ownerUsername;
             Name = name;
+            AccountType = accountType;
             Currency = currency;
             balance = startingBalance;
         }
 
-        // Sätter bara in pengar om beloppet är positivt
+        // Deposits money if the amount is positive
         public bool Deposit(decimal amount)
         {
             if (amount <= 0)
@@ -92,7 +61,7 @@ namespace Grupparbete_Bankapp
             return true;
         }
 
-        // Tar bara ut pengar om beloppet är positivt och saldot räcker
+        // Withdraws money if the amount is positive and the balance is sufficient
         public bool Withdraw(decimal amount)
         {
             if (amount <= 0 || amount > balance)

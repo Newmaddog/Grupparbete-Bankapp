@@ -10,4 +10,6 @@ namespace Grupparbete_Bankapp
         Admin,
         Owner,
     }
+
+    
 }

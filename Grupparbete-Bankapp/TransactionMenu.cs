@@ -1,22 +1,20 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Grupparbete_Bankapp
 {
-    // Here I show the transaction menu for the user who is logged in.
+    // Displays the transaction menu for the logged-in user.
     internal class TransactionMenu
     {
         private TransactionService service;
         private TransactionInput input;
 
-
-        // Here I show the menu and handle choices for the user who is logged in until they choose to go back.
+        // Displays the menu and handles the user's choices until they choose to go back.
         public TransactionMenu(TransactionService service)
         {
             this.service = service;
             input = new TransactionInput(service);
-
         }
 
         public void Show(Account user)
@@ -28,22 +26,24 @@ namespace Grupparbete_Bankapp
                 service.ProcessTransactions(DateTime.Now);
 
                 Console.WriteLine();
-                Console.WriteLine($"Transaktioner för {user.GetUserName()}");
-                // Here I use HH:mm to show the next processing time as hours and minutes, like 14:15.
-                Console.WriteLine($"Nästa behandling: {service.GetNextProcessingTime():HH:mm}");
+                Console.WriteLine($"Transactions for {user.GetUserName()}");
 
-                Console.WriteLine("1. Visa mina konton");
-                Console.WriteLine("2. Överför pengar");
-                Console.WriteLine("3. Visa min historik");
+                // Displays the next processing time in hours and minutes, for example 14:15.
+                Console.WriteLine($"Next processing: {service.GetNextProcessingTime():HH:mm}");
+
+                Console.WriteLine("1. View my accounts");
+                Console.WriteLine("2. Transfer money");
+                Console.WriteLine("3. View transaction history");
 
                 if (service.IsAdmin(user) == true)
                 {
-                    Console.WriteLine("4. Uppdatera valutakurser");
+                    Console.WriteLine("4. Update exchange rates");
                 }
 
-                Console.WriteLine("0. Tillbaka");
+                Console.WriteLine("0. Back");
 
-                string choice = input.ReadText("Välj: ");
+                string choice = input.ReadText("Choose: ");
+
                 switch (choice)
                 {
                     case "1":
@@ -67,38 +67,37 @@ namespace Grupparbete_Bankapp
                         break;
 
                     default:
-                        Console.WriteLine("Fel val. Försök igen.");
+                        Console.WriteLine("Invalid choice. Please try again.");
                         break;
                 }
             }
         }
 
-        // Here I show the customer's own accounts, their balances and the money they can still use.
-
+        // Displays the customer's accounts, balances, and available funds.
         private void ShowAccounts(Account user)
         {
             List<BankAccount> accounts = service.GetAccounts(user);
 
             if (accounts.Count == 0)
             {
-                Console.WriteLine("Du har inga bankkonton ännu.");
+                Console.WriteLine("You do not have any bank accounts yet.");
             }
 
             foreach (BankAccount account in accounts)
             {
-                Console.WriteLine($"{account.Number} | {account.Name} | Saldo: {account.Balance} {account.Currency} | Tillgängligt: {service.GetAvailableBalance(account)}");
+                Console.WriteLine(
+                    $"{account.Number} | {account.Name} | Type: {account.AccountType} | Balance: {account.Balance} {account.Currency} | Available: {service.GetAvailableBalance(account)}");
             }
         }
-
 
         private void Transfer(Account user)
         {
             ShowAccounts(user);
 
-            int fromNumber = input.ReadNumber("Från kontonummer: ");
-            int toNumber = input.ReadNumber("Till kontonummer: ");
+            int fromNumber = input.ReadNumber("From account number: ");
+            int toNumber = input.ReadNumber("To account number: ");
 
-            decimal amount = input.ReadDecimal("Belopp i avsändarkontots valuta: ");
+            decimal amount = input.ReadDecimal("Amount in the sender's currency: ");
 
             if (input.EndOfInput == true)
             {
@@ -109,55 +108,49 @@ namespace Grupparbete_Bankapp
 
             if (added == true)
             {
-                Console.WriteLine("Överföringen väntar till nästa kvart.");
+                Console.WriteLine("The transfer is scheduled for the next quarter-hour.");
             }
             else
             {
-                Console.WriteLine("Överföringen kunde inte läggas till. Kontrollera konton, kontoägare, belopp, tillgängligt saldo och dagens valutakurser.");
+                Console.WriteLine(
+                    "The transfer could not be added. Check the accounts, account ownership, amount, available balance, and today's exchange rates.");
             }
-
         }
 
-        // Here I show the customer's transfers and whether they are waiting, completed or failed.
+        // Displays the customer's transfers and whether they are pending, completed, or failed.
         private void ShowHistory(Account user)
         {
             List<Transaction> history = service.GetHistory(user);
-            
+
             if (history.Count == 0)
             {
-                Console.WriteLine("Du har inga överföringar i historiken.");
+                Console.WriteLine("You have no transfers in your history.");
             }
-
-
 
             foreach (Transaction transaction in history)
             {
-                Console.WriteLine($"#{transaction.Id} | {transaction.FromAccount} -> {transaction.ToAccount}");
+                Console.WriteLine(
+                    $"#{transaction.Id} | {transaction.FromAccount} -> {transaction.ToAccount}");
 
-                Console.WriteLine($"{transaction.Amount} {transaction.FromCurrency} -> {transaction.ReceivedAmount} {transaction.ToCurrency} | {transaction.Status}");
+                Console.WriteLine(
+                    $"{transaction.Amount} {transaction.FromCurrency} -> {transaction.ReceivedAmount} {transaction.ToCurrency} | {transaction.Status}");
 
-                Console.WriteLine($"Skapad: {transaction.CreatedAt:yyyy-MM-dd HH:mm} | Planerad: {transaction.ExecuteAt:yyyy-MM-dd HH:mm}");
+                Console.WriteLine(
+                    $"Created: {transaction.CreatedAt:yyyy-MM-dd HH:mm} | Scheduled: {transaction.ExecuteAt:yyyy-MM-dd HH:mm}");
             }
-
-
-
-
         }
 
-
-        // Only the group's admin role can save new rates.
-
-
+        // Only users with the admin role can update exchange rates.
         private void UpdateRates(Account user)
         {
             if (service.IsAdmin(user) == false)
             {
-                Console.WriteLine("Bara admin får uppdatera valutakurser.");
+                Console.WriteLine("Only administrators can update exchange rates.");
                 return;
             }
 
-            decimal euro = input.ReadDecimal("Hur många SEK är 1 EUR värd? ");
-            decimal dollar = input.ReadDecimal("Hur många SEK är 1 USD värd? ");
+            decimal euro = input.ReadDecimal("How many SEK is 1 EUR worth? ");
+            decimal dollar = input.ReadDecimal("How many SEK is 1 USD worth? ");
 
             if (input.EndOfInput == true)
             {
@@ -166,26 +159,16 @@ namespace Grupparbete_Bankapp
 
             if (service.UpdateRates(user, euro, dollar) == true)
             {
-                Console.WriteLine($"Valutakurserna är sparade för {service.GetRatesDate():yyyy-MM-dd}.");
+                Console.WriteLine(
+                    $"Exchange rates saved for {service.GetRatesDate():yyyy-MM-dd}.");
             }
             else
             {
-                Console.WriteLine("Kurserna måste vara mellan 0,0001 och 1000 SEK.");
+                Console.WriteLine(
+                    "Exchange rates must be between 0.0001 and 1000 SEK.");
             }
-
-
-
         }
-
-
-
     }
-
-
-
 }
-
-
-
 
 
