@@ -12,7 +12,7 @@ namespace Grupparbete_Bankapp
         private string FullName;
         private AccountType AccountType;
 
-        List<Bank> banks = new List<Bank>();
+         List<Bank> BankAccountList = new List<Bank>();
 
        
         public Account(string userName,string password,string fullName,AccountType accountType)
@@ -22,6 +22,21 @@ namespace Grupparbete_Bankapp
             FullName = fullName;
             AccountType = accountType;
         }
+
+        public void AddBankAccount(Bank bank)
+        {
+            BankAccountList.Add(bank);
+        }
+
+        public void GetBankAccountList()
+        {
+            foreach (Bank bank in BankAccountList)
+            {
+                Console.WriteLine(bank);
+            }
+        }
+
+        
 
         public string GetUserName() => UserName;
         public void SetUserName(string  userName)
@@ -39,13 +54,13 @@ namespace Grupparbete_Bankapp
         {
             this.FullName = fullName;
         }
-        public Enum GetAccountType() => AccountType;
+        public AccountType GetAccountType() => AccountType;
         public void SetAccountType(AccountType accountType)
         {
             this.AccountType = accountType;
         }
 
-     
+
         public override string ToString()
         {
 

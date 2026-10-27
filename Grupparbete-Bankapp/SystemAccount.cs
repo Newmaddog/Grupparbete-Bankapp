@@ -10,11 +10,15 @@ namespace Grupparbete_Bankapp
         AccountCreation accountCreation = new AccountCreation();
         LogInAccount logInAccount = new LogInAccount();
 
+        Account? ActiveAccount;
+
+        bool SystemBlock = false;
+
         public SystemAccount()
         {
-            Account account1 = new Account("Test1", "12345", "Test1", AccountType.User);
-            Account account2 = new Account("Test2", "12345", "Test2", AccountType.Admin);
-            Account account3 = new Account("Test3", "12345", "Test3", AccountType.Owner);
+            Account account1 = new Account("User1", "12345", "User", AccountType.User);
+            Account account2 = new Account("Admin1", "12345", "Admin", AccountType.Admin);
+            Account account3 = new Account("Owner1", "12345", "Owner", AccountType.Owner);
             accountList.Add(account1);
             accountList.Add(account2);
             accountList.Add(account3);
@@ -27,9 +31,22 @@ namespace Grupparbete_Bankapp
                 accountList.Add(account);
         }
 
+        public void CreateAccountAsAdmin()
+        {
+            if (ActiveAccount == null || ActiveAccount.GetAccountType() != AccountType.Admin)
+            {
+                Console.WriteLine("You have to log in as admin first");
+                return;
+            }
+
+            CreateAccount();
+
+        }
+
         public Account? LogInAccount()
         {
-            return logInAccount.LogIn(accountList);
+            ActiveAccount = logInAccount.LogIn(accountList, ref SystemBlock);
+            return ActiveAccount;
 
         }
 
@@ -41,5 +58,7 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine();
             }
         }
+
+        public bool SystemBlockStatus() => SystemBlock;
     }
 }

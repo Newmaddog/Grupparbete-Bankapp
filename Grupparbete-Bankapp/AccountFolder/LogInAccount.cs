@@ -7,13 +7,13 @@ namespace Grupparbete_Bankapp
     internal class LogInAccount
     {
 
-        public Account? LogIn(List<Account> accountList)
+        public Account? LogIn(List<Account> accountList , ref bool systemBlock)
         {
             Account? account = FindAccountWithUserName(accountList);
             if (account is null)
                 return null;
 
-            if (LogInPasswordSucceded(account))
+            if (LogInPasswordSucceded(account, ref systemBlock))
             {
                 WelcomeMessage(account);
                 return account;
@@ -58,7 +58,7 @@ namespace Grupparbete_Bankapp
             return tempAccount;
 
         }
-        public bool LogInPasswordSucceded(Account account)
+        public bool LogInPasswordSucceded(Account account, ref bool systemBlock)
         {
             string password = account.GetPassWord();
             string attemptPasword = "";
@@ -87,7 +87,8 @@ namespace Grupparbete_Bankapp
 
             } while (attempt > 0);
 
-            Console.WriteLine("To many attempts, account getting block.");
+            Console.WriteLine("To many attempts, system getting block.");
+            systemBlock = true;
 
             return false;
         }
