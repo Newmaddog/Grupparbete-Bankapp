@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using System.Text;
 
@@ -7,8 +8,17 @@ namespace Grupparbete_Bankapp
 {
     internal class AccountCreation
     {
+
+        private TransactionInput input;
+
+        public AccountCreation(TransactionInput input)
+        {
+            this.input = input;
+        }
+
         public Account? CreateAccount(List<Account> accountList)
         {
+            
             Console.WriteLine("Creating new Account");
             string userName = "";
             string passWord = "";
@@ -18,6 +28,12 @@ namespace Grupparbete_Bankapp
             passWord = SetPassword();
             fullName = SetFullName();
             accountType = SetAccountType();
+
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
             Account? account = ConfirmCreateAccount(userName, passWord, fullName, accountType, accountList);
             return account;
         }
@@ -31,7 +47,7 @@ namespace Grupparbete_Bankapp
                 //not sure yet if i will use it
                 //Constants.WriteExitText();
                 Console.Write("UserName: ");
-                userName = Console.ReadLine() ?? "";
+                userName = input.ReadText("");
                 if (Constants.IsNotUsableWordsUtilize(userName))
                 {
                     Console.Clear();
@@ -49,7 +65,9 @@ namespace Grupparbete_Bankapp
                     Console.WriteLine($"an Account with userName: {userName} exist alread!!!");
                     userName = "";
                 }
-            } while (userName == "");
+            } 
+            
+            while (userName == "" && input.EndOfInput == false);
 
             return userName;
         }
@@ -68,7 +86,9 @@ namespace Grupparbete_Bankapp
                     Console.WriteLine("short password try again");
                 }
 
-            } while (passWord.Length < 5);
+            } 
+            
+            while (passWord.Length < 5 && input.EndOfInput == false);
 
             return passWord;
         }
@@ -80,12 +100,13 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine("Write your full name");
                 Console.Write("Full name: ");
-                fullName = Console.ReadLine() ?? "";
+                fullName = input.ReadText("");
                 if (fullName == "")
                 {
                     Console.WriteLine("can't be empty");
                 }
-            } while (fullName == "");
+            }  
+            while (fullName == "" && input.EndOfInput == false);
             return fullName;
         }
 
@@ -106,7 +127,7 @@ namespace Grupparbete_Bankapp
                     Console.WriteLine("choice 1,2 or 3 please");
                 }
 
-            } while (!enumSet);
+            }  while (enumSet == false && input.EndOfInput == false);
 
             return accountType;
         }

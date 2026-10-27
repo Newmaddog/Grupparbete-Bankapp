@@ -8,12 +8,14 @@ namespace Grupparbete_Bankapp
         private readonly Bank bank;
         private readonly Account user;
         private TransactionInput transactionInput;
-        public BankMeny(Bank bank, Account user)
+        private SystemAccount systemAccount;
+        public BankMeny(Bank bank, Account user, SystemAccount systemAccount)
         {
             this.bank = bank;
 
             // here i keep the user who logged in
             this.user = user;
+            this.systemAccount = systemAccount;
 
             // Here I let transfers run while the user types or waits.
             transactionInput = new TransactionInput(bank.Transactions);
@@ -48,6 +50,10 @@ namespace Grupparbete_Bankapp
 
                 Console.WriteLine("  4. Show accounts for a user");
                 Console.WriteLine("  5. Transactions");
+                if (bank.Transactions.IsAdmin(user) == true)
+                {
+                    Console.WriteLine("  6. Create user");
+                }
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("  0. Exit");
@@ -95,6 +101,11 @@ namespace Grupparbete_Bankapp
 
                     case "5":
                         ShowTransactionsMenu();
+                        break;
+
+                    case "6":
+                        // This method also checks that the user is admin.
+                        systemAccount.CreateAccountAsAdmin();
                         break;
 
                     case "0":

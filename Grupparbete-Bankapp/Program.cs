@@ -12,11 +12,10 @@ namespace Grupparbete_Bankapp
 
         private static void Start()
         {
-            SystemAccount systemAccount = new SystemAccount();
-            systemAccount.AccountList();
-            systemAccount.CreateAccount();
+            Bank bank = new Bank("CHAS BANK");
+            TransactionInput input = new TransactionInput(bank.Transactions);
+            SystemAccount systemAccount = new SystemAccount(input);
 
-            // Here I keep the user returned by the login.
             Account? user = systemAccount.LogInAccount();
 
             if (systemAccount.SystemBlockStatus())
@@ -25,16 +24,13 @@ namespace Grupparbete_Bankapp
                 System.Environment.Exit(1);
             }
 
-            // Here I stop if the login did not return a user.
             if (user == null)
             {
                 return;
             }
 
-            Bank bank = new Bank("CHAS BANK");
-
-            // Here I send the bank and the logged-in user to the menu.
-            BankMeny bankMeny = new BankMeny(bank, user);
+            // Here I use the same user list in the bank menu.
+            BankMeny bankMeny = new BankMeny(bank, user, systemAccount);
             bankMeny.ShowMenu();
         }
     }
