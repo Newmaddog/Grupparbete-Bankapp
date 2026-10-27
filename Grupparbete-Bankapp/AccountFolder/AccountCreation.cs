@@ -25,8 +25,25 @@ namespace Grupparbete_Bankapp
             string fullName = "";
             AccountType accountType;
             userName = SetUserName(accountList);
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
+
             passWord = SetPassword();
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
             fullName = SetFullName();
+
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
             accountType = SetAccountType();
 
             if (input.EndOfInput == true)
@@ -79,7 +96,7 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine("PassWord, password most be longer then 4");
                 Console.Write("Password: ");
-                passWord = Console.ReadLine() ?? "";
+                passWord = input.ReadText("");
 
                 if (passWord.Length < 5)
                 {
@@ -143,10 +160,18 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine($"UserName: {userName}\nFullName: {fullName}\nAccountType: {accountType}\n");
                 Console.WriteLine($"press 0 to cancel\npress 1 to confirm Account \n2: change UserName\n3: change password\n4: change fullname\n5 change AccountType");
 
-                if (!int.TryParse(Console.ReadLine(), out menuChoice))
+                string choice = input.ReadText("");
+
+                // Here I stop if there is no more input.
+                if (input.EndOfInput == true)
+                {
+                    return null;
+                }
+
+                if (!int.TryParse(choice, out menuChoice))
                 {
                     Console.WriteLine("Invalid input. Press Enter to try again.");
-                    Console.ReadLine();
+                    input.ReadText("");
                     Console.Clear();
                     menuChoice = -1;
                     continue;
@@ -168,9 +193,9 @@ namespace Grupparbete_Bankapp
                         break;
                 }
 
-            } while (menuChoice is not (0 or 1));
+            } while (menuChoice != 0 && menuChoice != 1 && input.EndOfInput == false);
 
-            if (menuChoice == 0)
+            if (menuChoice == 0 || input.EndOfInput == true)
             {
                 return null;
             }
