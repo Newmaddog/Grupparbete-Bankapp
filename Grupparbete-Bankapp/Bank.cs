@@ -1,17 +1,16 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 namespace Grupparbete_Bankapp
 {
     public class Bank
     {
         public string Name { get; private set; }
+        private int nextAccountNumber = 1001;
 
-        // Here I keep the bank accounts in one list that the transaction service also uses.
         internal List<BankAccount> BankAccounts { get; private set; }
-
         internal TransactionService Transactions { get; private set; }
-
 
         public Bank(string name)
         {
@@ -23,8 +22,61 @@ namespace Grupparbete_Bankapp
         public void ShowInfo()
         {
             Console.WriteLine("========================");
-            Console.WriteLine($"Välkommen till {Name}!");
+            Console.WriteLine($"Welcome to {Name}!");
             Console.WriteLine("========================");
+        }
+
+        public BankAccount OpenNewAccount(
+            string ownerUsername,
+            string accountName,
+            Currency currency,
+            BankAccountType accountType)
+        {
+            BankAccount newAccount = new BankAccount(
+                nextAccountNumber,
+                ownerUsername,
+                accountName,
+                accountType,
+                currency,
+                0m
+            );
+
+            BankAccounts.Add(newAccount);
+            nextAccountNumber++;
+
+            return newAccount;
+        }
+
+        public void ShowAllAccounts()
+        {
+            foreach (BankAccount account in BankAccounts)
+            {
+                Console.WriteLine(
+                    $"Account: {account.Number} | " +
+                    $"Owner: {account.OwnerUsername} | " +
+                    $"Name: {account.Name} | " +
+                    $"Type: {account.AccountType} | " +
+                    $"Currency: {account.Currency} | " +
+                    $"Balance: {account.Balance}"
+                );
+            }
+        }
+
+        public void ShowAccountsForUser(string username)
+        {
+            foreach (BankAccount account in BankAccounts)
+            {
+                if (account.OwnerUsername == username)
+                {
+                    Console.WriteLine(
+                        $"Account: {account.Number} | " +
+                        $"Name: {account.Name} | " +
+                        $"Type: {account.AccountType} | " +
+                        $"Currency: {account.Currency} | " +
+                        $"Balance: {account.Balance}"
+                    );
+                }
+            }
         }
     }
 }
