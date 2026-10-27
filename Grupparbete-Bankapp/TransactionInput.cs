@@ -118,7 +118,7 @@ namespace Grupparbete_Bankapp
                 }
                 catch
                 {
-                    Console.WriteLine("Skriv ett heltal.");
+                    Console.WriteLine("Enter a whole number.");
                 }
             }
 
@@ -207,7 +207,7 @@ namespace Grupparbete_Bankapp
 
                 if (valid == false)
                 {
-                    Console.WriteLine("Skriv ett tal, till exempel 100,50 eller 100.50. Skriv tusen som 1000.");
+                    Console.WriteLine("Enter a number such as 100.50 or 100,50. Write one thousand as 1000.");
                 }
             }
 

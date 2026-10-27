@@ -31,12 +31,12 @@ namespace Grupparbete_Bankapp
         public Account? FindAccountWithUserName(List<Account> accountList)
         {
             string? tempUserName = "";
-            Console.WriteLine($"Log in");
+            Console.WriteLine("LOG IN");
             Account? tempAccount = null;
             do
             {
                 Constants.WriteExitText();
-                Console.Write($"Write your UserName please: ");
+                Console.Write("Username: ");
                 tempUserName = input.ReadText("");
                 // Here I stop if the user cancels or input ends.
                 if (input.EndOfInput == true || Constants.IsNotUsableWordsUtilize(tempUserName))
@@ -51,7 +51,7 @@ namespace Grupparbete_Bankapp
                     if (account.GetUserName() == tempUserName)
                     {
                         tempAccount = account;
-                        Console.WriteLine($"Account with UserName: {tempUserName} found");
+                        Console.WriteLine("Username found.");
                         break;
                     }
                 }
@@ -59,7 +59,7 @@ namespace Grupparbete_Bankapp
                 if (tempAccount == null)
                 {
                     Console.Clear();
-                    Console.WriteLine($"Could not find {tempUserName} in our database!!");
+                    Console.WriteLine("Username not found. Please try again.");
                 }
 
             } while (tempAccount is null);
@@ -97,14 +97,14 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine($"Wrong password. Attempts left: {attemptsLeft}");
             }
 
-            Console.WriteLine("This user is locked after three wrong password attempts");
+            Console.WriteLine("This user is locked after three wrong password attempts.");
             return false;
         }
 
         public void WelcomeMessage(Account account)
         {
-            Console.WriteLine($"Welcome {account.GetFullName()} to the bank");
-            Console.WriteLine("All your information: ");
+            Console.WriteLine($"Welcome to CHAS BANK, {account.GetFullName()}.");
+            Console.WriteLine("Your details:");
             Console.WriteLine(account);
             Console.WriteLine("\nPress Enter to continue");
 

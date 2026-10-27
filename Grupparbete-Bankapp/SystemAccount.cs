@@ -37,7 +37,7 @@ namespace Grupparbete_Bankapp
         {
             if (ActiveAccount == null || ActiveAccount.GetAccountType() != AccountType.Admin)
             {
-                Console.WriteLine("You have to log in as admin first");
+                Console.WriteLine("Only administrators can create users.");
                 return;
             }
 

@@ -47,9 +47,9 @@ namespace Grupparbete_Bankapp
                 if (bank.Transactions.IsAdmin(user) == true)
                 { 
                     Console.WriteLine("  3. Show all bank accounts"); 
-                } 
+                }
 
-                Console.WriteLine("  4. Show accounts for a user");
+                Console.WriteLine("  4. Show my accounts");
                 Console.WriteLine("  5. Transactions");
                 if (bank.Transactions.IsAdmin(user) == true)
                 {
@@ -58,7 +58,7 @@ namespace Grupparbete_Bankapp
 
                 Console.WriteLine("  7. Deposit money");
 
-                Console.ForegroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("  0. Log out");
                 Console.ResetColor();
 
@@ -266,7 +266,7 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            Console.WriteLine("The deposit will be added at the next quearter hour.");
+            Console.WriteLine("The deposit is scheduled for the next quarter-hour.");
 
             foreach (BankAccount account in bank.Transactions.GetAccounts(user))
             {

@@ -26,11 +26,14 @@ namespace Grupparbete_Bankapp
                 service.ProcessTransactions(DateTime.Now);
 
                 Console.WriteLine();
-                Console.WriteLine($"Transactions for {user.GetUserName()}");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"TRANSACTIONS - {user.GetUserName()}");
+                Console.ResetColor();
 
                 // Displays the next processing time in hours and minutes, for example 14:15.
                 Console.WriteLine($"Next processing: {service.GetNextProcessingTime():HH:mm}");
 
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("1. View my accounts");
                 Console.WriteLine("2. Transfer money");
                 Console.WriteLine("3. View transaction history");
@@ -41,8 +44,12 @@ namespace Grupparbete_Bankapp
                 }
 
                 Console.WriteLine("0. Back");
+                Console.ResetColor();
 
-                string choice = input.ReadText("Choose: ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                string choice = input.ReadText("Choose an option: ");
+                Console.ResetColor();
+
 
                 switch (choice)
                 {
