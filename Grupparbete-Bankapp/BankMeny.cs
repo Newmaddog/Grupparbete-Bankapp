@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Security.Principal;
 
 namespace Grupparbete_Bankapp
 {
@@ -55,6 +56,8 @@ namespace Grupparbete_Bankapp
                     Console.WriteLine("  6. Create user");
                 }
 
+                Console.WriteLine("  7. Deposit money");
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("  0. Log out");
                 Console.ResetColor();
@@ -107,6 +110,11 @@ namespace Grupparbete_Bankapp
                         // This method also checks that the user is admin.
                         systemAccount.CreateAccountAsAdmin();
                         break;
+
+                    case "7":
+                        Deposit();
+                        break;
+
 
                     case "0":
                         Console.ForegroundColor = ConsoleColor.Cyan;
@@ -249,6 +257,49 @@ namespace Grupparbete_Bankapp
 
             Console.WriteLine();
         }
+
+        private void Deposit()
+        {
+            if (bank.Transactions.GetAccounts(user).Count == 0)
+            {
+                Console.WriteLine("Open a bank account first.");
+                return;
+            }
+
+            bank.ShowAccountsForUser(user.GetUserName());
+
+            int accountNumber = transactionInput.ReadNumber("Account number: ");
+
+            decimal amount = transactionInput.ReadDecimal("Amount in the account's currency: ");
+
+            if (transactionInput.EndOfInput == true)
+            {
+                return;
+            }
+
+            bool added = bank.Transactions.Deposit(user, accountNumber, amount);
+
+            if (added == false)
+            {
+                Console.WriteLine("Check your account number and amount. Use an amount over 0 and up to 10000 with up to two decimals.");
+                return;
+            }
+
+            Console.WriteLine("The deposit will be added at the next quearter hour.");
+
+            foreach (BankAccount account in bank.Transactions.GetAccounts(user))
+            {
+                if (account.Number == accountNumber && account.AccountType == BankAccountType.Savings)
+                {
+                    // Here I show the interest before the deposit goes through.
+                    decimal interest = account.GetSavingsInterest(amount);
+                    Console.WriteLine($"Estimated interest for one year at 2%: {interest:F2} {account.Currency}");
+                }
+            }
+
+
+        }
+
 
         private void ShowTransactionsMenu()
         {

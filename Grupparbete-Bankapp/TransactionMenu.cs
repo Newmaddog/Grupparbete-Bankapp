@@ -117,28 +117,42 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        // Displays the customer's transfers and whether they are pending, completed, or failed.
+        // Here I show deposits and transfers that are waiting done or failed.
         private void ShowHistory(Account user)
         {
             List<Transaction> history = service.GetHistory(user);
 
             if (history.Count == 0)
             {
-                Console.WriteLine("You have no transfers in your history.");
+                Console.WriteLine("You have no transactions in your history.");
             }
+
+            // Here I show each deposit or transfer.
 
             foreach (Transaction transaction in history)
             {
-                Console.WriteLine(
-                    $"#{transaction.Id} | {transaction.FromAccount} -> {transaction.ToAccount}");
+                Console.WriteLine($"Transaction: {transaction.Id}");
 
-                Console.WriteLine(
-                    $"{transaction.Amount} {transaction.FromCurrency} -> {transaction.ReceivedAmount} {transaction.ToCurrency} | {transaction.Status}");
+                if (transaction.IsDeposit == true)
+                {
+                    Console.WriteLine($"Deposit to account: {transaction.ToAccount}");
+                    Console.WriteLine($"Amount: {transaction.Amount} {transaction.ToCurrency}");
+                }
+                else
+                {
+                    Console.WriteLine($"From account: {transaction.FromAccount}");
+                    Console.WriteLine($"To account: {transaction.ToAccount}");
+                    Console.WriteLine($"Sent: {transaction.Amount} {transaction.FromCurrency}");
+                    Console.WriteLine($"Received: {transaction.ReceivedAmount} {transaction.ToCurrency}");
+                }
 
-                Console.WriteLine(
-                    $"Created: {transaction.CreatedAt:yyyy-MM-dd HH:mm} | Scheduled: {transaction.ExecuteAt:yyyy-MM-dd HH:mm}");
+                Console.WriteLine($"Status: {transaction.Status}");
+                Console.WriteLine($"Created: {transaction.CreatedAt:yyyy-MM-dd HH:mm}");
+                Console.WriteLine($"Scheduled: {transaction.ExecuteAt:yyyy-MM-dd HH:mm}");
+                Console.WriteLine();
             }
         }
+        
 
         // Only users with the admin role can update exchange rates.
         private void UpdateRates(Account user)
