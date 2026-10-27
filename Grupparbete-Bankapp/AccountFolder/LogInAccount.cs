@@ -38,7 +38,8 @@ namespace Grupparbete_Bankapp
                 Constants.WriteExitText();
                 Console.Write($"Write your UserName please: ");
                 tempUserName = input.ReadText("");
-                if (input.EndOfInput == true)
+                // Here I stop if the user cancels or input ends.
+                if (input.EndOfInput == true || Constants.IsNotUsableWordsUtilize(tempUserName))
                 {
                     return null;
                 }
