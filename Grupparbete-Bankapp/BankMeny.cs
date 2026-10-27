@@ -6,10 +6,13 @@ namespace Grupparbete_Bankapp
     internal class BankMeny
     {
         private readonly Bank bank;
-
-        public BankMeny(Bank bank)
+        private readonly Account user;
+        public BankMeny(Bank bank, Account user)
         {
             this.bank = bank;
+
+            // here i keep the user who logged in
+            this.user = user;
         }
 
         public void ShowMenu()
@@ -216,14 +219,11 @@ namespace Grupparbete_Bankapp
 
         private void ShowTransactionsMenu()
         {
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("========== TRANSACTIONS ==========");
-            Console.ResetColor();
+            // here i use the same transaction as the bank 
+            TransactionMenu transactionMenu = new TransactionMenu(bank.Transactions);
 
-            Console.WriteLine(
-                "Your existing TransactionMenu should be connected here."
-            );
+            // here i open the transaktion menu for the logged in user 
+            transactionMenu.Show(user);
         }
     }
 }
