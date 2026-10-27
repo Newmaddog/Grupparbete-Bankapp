@@ -7,12 +7,16 @@ namespace Grupparbete_Bankapp
     {
         private readonly Bank bank;
         private readonly Account user;
+        private TransactionInput transactionInput;
         public BankMeny(Bank bank, Account user)
         {
             this.bank = bank;
 
             // here i keep the user who logged in
             this.user = user;
+
+            // Here I let transfers run while the user types or waits.
+            transactionInput = new TransactionInput(bank.Transactions);
         }
 
         public void ShowMenu()
@@ -22,7 +26,7 @@ namespace Grupparbete_Bankapp
             // Show the bank logo when entering the menu
             ShowLogo();
 
-            while (running)
+            while (running == true && transactionInput.EndOfInput == false)
             {
                 Console.ResetColor();
                 Console.WriteLine();
@@ -39,16 +43,20 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine("  3. Show all bank accounts");
                 Console.WriteLine("  4. Show accounts for a user");
                 Console.WriteLine("  5. Transactions");
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("  0. Exit");
                 Console.ResetColor();
 
                 Console.WriteLine("--------------------------------");
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("Choose an option: ");
                 Console.ResetColor();
 
-                string choice = Console.ReadLine() ?? "";
+
+                // Here I read the choice while checking waiting transfers.
+                string choice = transactionInput.ReadText("");
 
                 switch (choice)
                 {
@@ -66,7 +74,7 @@ namespace Grupparbete_Bankapp
 
                     case "4":
                         Console.Write("Enter username: ");
-                        string username = Console.ReadLine() ?? "";
+                        string username = transactionInput.ReadText("");
                         bank.ShowAccountsForUser(username);
                         break;
 
@@ -136,11 +144,12 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("========== OPEN NEW ACCOUNT ==========");
             Console.ResetColor();
 
+            // here i keep checking transfer while the cutomer answers
             Console.Write("Enter username: ");
-            string username = Console.ReadLine() ?? "";
+            string username = transactionInput.ReadText("");
 
             Console.Write("Enter account name: ");
-            string accountName = Console.ReadLine() ?? "";
+            string accountName = transactionInput.ReadText("");
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -151,7 +160,7 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("2. Savings account");
             Console.Write("Choose an option: ");
 
-            string accountTypeChoice = Console.ReadLine() ?? "";
+            string accountTypeChoice = transactionInput.ReadText("");
 
             BankAccountType? accountType = accountTypeChoice switch
             {
@@ -178,7 +187,7 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("3. USD");
             Console.Write("Choose an option: ");
 
-            string currencyChoice = Console.ReadLine() ?? "";
+            string currencyChoice = transactionInput.ReadText("");
 
             Currency? currency = currencyChoice switch
             {
