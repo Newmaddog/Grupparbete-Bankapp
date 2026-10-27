@@ -40,7 +40,12 @@ namespace Grupparbete_Bankapp
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("  1. Show bank information");
                 Console.WriteLine("  2. Open new account");
-                Console.WriteLine("  3. Show all bank accounts");
+                
+                if (bank.Transactions.IsAdmin(user) == true)
+                { 
+                    Console.WriteLine("  3. Show all bank accounts"); 
+                } 
+
                 Console.WriteLine("  4. Show accounts for a user");
                 Console.WriteLine("  5. Transactions");
 
@@ -69,13 +74,23 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "3":
-                        bank.ShowAllAccounts();
+                        // only admin kan see everyone account
+                        if (bank.Transactions.IsAdmin(user) == true)
+
+                        {
+                            bank.ShowAllAccounts();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Only admin can view all accounts.");
+                        }
                         break;
 
                     case "4":
-                        Console.Write("Enter username: ");
-                        string username = transactionInput.ReadText("");
-                        bank.ShowAccountsForUser(username);
+                       
+                        // here i show the accounts of the user who logged in 
+
+                        bank.ShowAccountsForUser(user.GetUserName());
                         break;
 
                     case "5":
@@ -144,9 +159,8 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("========== OPEN NEW ACCOUNT ==========");
             Console.ResetColor();
 
-            // here i keep checking transfer while the cutomer answers
-            Console.Write("Enter username: ");
-            string username = transactionInput.ReadText("");
+            // the new account belongs to the user who logged in
+            string username = user.GetUserName();
 
             Console.Write("Enter account name: ");
             string accountName = transactionInput.ReadText("");
