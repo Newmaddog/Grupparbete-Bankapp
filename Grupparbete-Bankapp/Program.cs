@@ -12,7 +12,7 @@ namespace Grupparbete_Bankapp
             SystemAccount systemAccount = new SystemAccount();
             Bank bank = new Bank("CHAS BANK");
             BankMeny bankMeny = new BankMeny(bank);
-            Account? ActiveAccount;
+            Account? ActiveAccount = null;
 
             int choice = -1;
             while (true)
