@@ -133,40 +133,21 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        private void ShowLogo()
+        public static void ShowLogo()
         {
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Cyan;
 
-            Console.WriteLine(
-                @"   ______ _   _    _    ____   ____    _    _   _ _  __"
-            );
-            Console.WriteLine(
-                @"  / ___/ | | |  / \  / ___| / ___|  / \  | \ | | |/ /"
-            );
-            Console.WriteLine(
-                @" | |   | |_| | / _ \| |    | |     / _ \ |  \| | ' /"
-            );
-            Console.WriteLine(
-                @" | |___|  _  |/ ___ \ |___ | |___ / ___ \| |\  | . \"
-            );
-            Console.WriteLine(
-                @"  \____|_| |_/_/   \_\____| \____/_/   \_\_| \_|_|\_\"
-            );
+            Console.WriteLine(@"  ____   _   _      _      ____      ____       _      _   _   _  __");
+            Console.WriteLine(@" / ___| | | | |    / \    / ___|    | __ )     / \    | \ | | | |/ /");
+            Console.WriteLine(@"| |     | |_| |   / _ \   \___ \    |  _ \    / _ \   |  \| | | ' /");
+            Console.WriteLine(@"| |___  |  _  |  / ___ \   ___) |   | |_) |  / ___ \  | |\  | | . \");
+            Console.WriteLine(@" \____| |_| |_| /_/   \_\ |____/    |____/  /_/   \_\ |_| \_| |_|\_\");
 
-            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine();
-            Console.WriteLine("======================================================");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("                    CHAS BANK");
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("======================================================");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("          Welcome to your banking experience!");
             Console.ResetColor();
-
+            Console.WriteLine("Welcome to CHAS BANK.");
             Console.WriteLine();
         }
 
