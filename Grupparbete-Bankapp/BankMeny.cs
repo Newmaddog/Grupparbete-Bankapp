@@ -7,12 +7,14 @@ namespace Grupparbete_Bankapp
     {
         private readonly Bank bank;
 
+        
+
         public BankMeny(Bank bank)
         {
             this.bank = bank;
         }
 
-        public void ShowMenu()
+        public void ShowMenu(Account activeAccount)
         {
             bool running = true;
 
