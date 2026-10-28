@@ -14,6 +14,7 @@ namespace Grupparbete_Bankapp
         {
             // Skapa banken och transaktionssystemet.
             Bank bank = new Bank("CHAS BANK");
+            LoanService loanService = new LoanService(new InterestCalculator());
             TransactionInput input = new TransactionInput(bank.Transactions);
             SystemAccount systemAccount = new SystemAccount(input);
 
@@ -73,10 +74,11 @@ namespace Grupparbete_Bankapp
                         BankMeny bankMeny = new BankMeny(
                             bank,
                             activeAccount,
-                            systemAccount
+                            systemAccount,
+                            loanService
                         );
 
-                        bankMeny.ShowMenu();
+                        bankMeny.ShowMenu(activeAccount);
                         break;
 
                     case "0":

@@ -9,12 +9,13 @@ namespace Grupparbete_Bankapp
         private readonly Bank bank;
 
 
-        
+        private readonly LoanService loanService;
+        private readonly LoanMenu loanMenu;
 
         private readonly Account user;
         private TransactionInput transactionInput;
         private SystemAccount systemAccount;
-        public BankMeny(Bank bank, Account user, SystemAccount systemAccount)
+        public BankMeny(Bank bank, Account user, SystemAccount systemAccount, LoanService loanService)
 
         {
             this.bank = bank;
@@ -22,9 +23,14 @@ namespace Grupparbete_Bankapp
             // here i keep the user who logged in
             this.user = user;
             this.systemAccount = systemAccount;
+            this.loanService = loanService;
 
             // Here I let transfers run while the user types or waits.
             transactionInput = new TransactionInput(bank.Transactions);
+
+            //Creates loaning service and a menu for it
+            loanService = new LoanService(new InterestCalculator());
+            loanMenu = new LoanMenu(loanService);
         }
 
         public void ShowMenu(Account activeAccount)
@@ -62,6 +68,8 @@ namespace Grupparbete_Bankapp
                 }
 
                 Console.WriteLine("  7. Deposit money");
+
+                Console.WriteLine("  8. Loans");
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("  0. Log out");
@@ -118,6 +126,10 @@ namespace Grupparbete_Bankapp
 
                     case "7":
                         Deposit();
+                        break;
+
+                    case "8":
+                        ShowLoanOption();
                         break;
 
 
@@ -295,5 +307,50 @@ namespace Grupparbete_Bankapp
             // here i open the transaktion menu for the logged in user 
             transactionMenu.Show(user);
         }
+
+        private void ShowLoanOption()
+        {
+            var accounts = bank.Transactions.GetAccounts(user);
+
+            if (accounts.Count == 0)
+            {
+                Console.WriteLine("No bank account registered, open one first.");
+                return;
+            }
+            Console.WriteLine("Select the account you want to loan for.");
+            foreach(BankAccount account in accounts)
+            {
+                Console.WriteLine($"Account: {account.Number}");
+                Console.WriteLine($"Name: {account.Name}");
+                Console.WriteLine($"Balance: {account.Balance} {account.Currency}");
+            }
+
+            int accountNumber = transactionInput.ReadNumber("Enter account number: ");
+
+            if (transactionInput.EndOfInput)
+            {
+                return;
+            }
+
+            BankAccount? selectedAccount = null;
+            foreach(BankAccount account in accounts)
+            {
+                if (account.Number == accountNumber)
+                {
+                    selectedAccount = account;
+                    break;
+                }
+            }
+
+            if (selectedAccount == null)
+            {
+                Console.WriteLine("Invalid account.");
+                return;
+            }
+
+            loanMenu.ShowLoanMenu(selectedAccount);
+
+        }
+
     }
 }
