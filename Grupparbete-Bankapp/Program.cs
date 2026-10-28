@@ -15,7 +15,7 @@ namespace Grupparbete_Bankapp
             // Skapa banken och transaktionssystemet.
             Bank bank = new Bank("CHAS BANK");
             TransactionInput input = new TransactionInput(bank.Transactions);
-            SystemAccount systemAccount = new SystemAccount(input);
+            SystemAccount systemAccount = new SystemAccount();
 
             Account? activeAccount = null;
             bool running = true;
@@ -76,7 +76,7 @@ namespace Grupparbete_Bankapp
                             systemAccount
                         );
 
-                        bankMeny.ShowMenu();
+                        bankMeny.ShowMenu(activeAccount);
                         break;
 
                     case "0":
