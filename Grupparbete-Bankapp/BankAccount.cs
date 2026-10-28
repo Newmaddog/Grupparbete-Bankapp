@@ -61,6 +61,21 @@ namespace Grupparbete_Bankapp
             return true;
         }
 
+
+        // Here I calculate one year's interest at 2% for a savings account.
+        public decimal GetSavingsInterest(decimal amount)
+        {
+            if (AccountType != BankAccountType.Savings || amount <= 0) 
+            {
+                return 0;
+            }
+
+            return amount * 2 / 100;
+
+        }
+
+
+
         // Withdraws money if the amount is positive and the balance is sufficient
         public bool Withdraw(decimal amount)
         {

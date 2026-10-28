@@ -6,25 +6,12 @@ namespace Grupparbete_Bankapp
 {
     public static class Constants
     {
-        public static readonly string[] NotUsableWords = ["Exit", "Cancel"];
-        public static bool IsNotUsableWordsUtilize(string text)
-        {
-            if (Constants.NotUsableWords.Contains(text, StringComparer.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-            return false;
-        }
+        // Here I show the user that 0 means cancel.
         public static void WriteExitText()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Use one of this words to cancel: ");
-            foreach (string word in NotUsableWords)
-            {
-                Console.Write($"{word}, ");
-            }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("0. Cancel");
             Console.ResetColor();
-            Console.WriteLine();
         }
     }
 }
