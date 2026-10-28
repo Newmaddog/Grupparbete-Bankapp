@@ -7,51 +7,42 @@ namespace Grupparbete_Bankapp
     internal class LogInAccount
     {
 
-        private TransactionInput input;
-
-        public LogInAccount(TransactionInput input)
-        {
-            this.input = input;
-        }
-
-        public Account? LogIn(List<Account> accountList)
+        public Account? LogIn(List<Account> accountList, ref bool systemBlock)
         {
             Account? account = FindAccountWithUserName(accountList);
             if (account is null)
                 return null;
 
-            if (LogInPasswordSucceded(account))
+            if (LogInPasswordSucceded(account, ref systemBlock))
             {
                 WelcomeMessage(account);
                 return account;
             }
-            return null ;
+            return null;
         }
 
         public Account? FindAccountWithUserName(List<Account> accountList)
         {
             string? tempUserName = "";
-            Console.WriteLine("LOG IN");
+            Console.WriteLine($"Log in");
             Account? tempAccount = null;
             do
             {
                 Constants.WriteExitText();
-                Console.Write("Username: ");
-                tempUserName = input.ReadText("");
-                // Here I stop if the user cancels or input ends.
-                if (input.EndOfInput == true || Constants.IsNotUsableWordsUtilize(tempUserName))
+                Console.Write($"Write your UserName please: ");
+                tempUserName = Console.ReadLine() ?? "";
+
+                if (Constants.IsNotUsableWordsUtilize(tempUserName))
                 {
                     return null;
                 }
-
-
 
                 foreach (Account account in accountList)
                 {
                     if (account.GetUserName() == tempUserName)
                     {
                         tempAccount = account;
-                        Console.WriteLine("Username found.");
+                        Console.WriteLine($"Account with UserName: {tempUserName} found");
                         break;
                     }
                 }
@@ -59,7 +50,7 @@ namespace Grupparbete_Bankapp
                 if (tempAccount == null)
                 {
                     Console.Clear();
-                    Console.WriteLine("Username not found. Please try again.");
+                    Console.WriteLine($"Could not find {tempUserName} in our database!!");
                 }
 
             } while (tempAccount is null);
@@ -67,48 +58,48 @@ namespace Grupparbete_Bankapp
             return tempAccount;
 
         }
-        public bool LogInPasswordSucceded(Account account)
+        public bool LogInPasswordSucceded(Account account, ref bool systemBlock)
         {
-            if (account.IsLocked() == true)
-            {
-                Console.WriteLine("This user is locked.");
-                return false;
-            }
-
-            while (account.IsLocked() == false && input.EndOfInput == false)
+            string password = account.GetPassWord();
+            string attemptPasword = "";
+            int attempt = 3;
+            do
             {
                 Constants.WriteExitText();
-                string password = input.ReadText("Password: ");
+                Console.Write($"\nLog in with Password: ");
+                attemptPasword = Console.ReadLine() ?? "";
 
-                if (input.EndOfInput == true || Constants.IsNotUsableWordsUtilize(password))
+                if (Constants.IsNotUsableWordsUtilize(attemptPasword))
                 {
+                    Console.Clear();
+                    Console.WriteLine("Cancel Log in");
                     return false;
                 }
 
-                if (password == account.GetPassWord())
+                if (attemptPasword == password)
                 {
-                    account.ResetFailedLoginAttempts();
-                    Console.WriteLine("Login successful.");
+                    Console.WriteLine("Succes! loggin in");
                     return true;
                 }
-                // If the user cancels and tries again, the earlier wrong passwords still count.
-                account.AddFailedLoginAttempt();
-                int attemptsLeft = 3 - account.GetFailedLoginAttempts();
-                Console.WriteLine($"Wrong password. Attempts left: {attemptsLeft}");
-            }
+                Console.Clear();
+                Console.WriteLine("wrong password try again");
+                attempt--;
 
-            Console.WriteLine("This user is locked after three wrong password attempts.");
+            } while (attempt > 0);
+
+            Console.WriteLine("To many attempts, system getting block.");
+            systemBlock = true;
+
             return false;
         }
 
         public void WelcomeMessage(Account account)
         {
-            Console.WriteLine($"Welcome to CHAS BANK, {account.GetFullName()}.");
-            Console.WriteLine("Your details:");
+            Console.WriteLine($"Welcome {account.GetFullName()} to the bank");
+            Console.WriteLine("All your information: ");
             Console.WriteLine(account);
             Console.WriteLine("\nPress Enter to continue");
-
-            input.ReadText("");
+            Console.ReadLine();
         }
     }
 }

@@ -11,18 +11,16 @@ namespace Grupparbete_Bankapp
         private string Password;
         private string FullName;
         private AccountType AccountType;
-        private int failedLoginAttempts;
 
-         List<Bank> BankAccountList = new List<Bank>();
+        List<Bank> BankAccountList = new List<Bank>();
 
-       
-        public Account(string userName,string password,string fullName,AccountType accountType)
+
+        public Account(string userName, string password, string fullName, AccountType accountType)
         {
             UserName = userName;
             Password = password;
             FullName = fullName;
             AccountType = accountType;
-            failedLoginAttempts = 0;
         }
 
         public void AddBankAccount(Bank bank)
@@ -38,10 +36,10 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        
+
 
         public string GetUserName() => UserName;
-        public void SetUserName(string  userName)
+        public void SetUserName(string userName)
         {
             this.UserName = userName;
         }
@@ -63,41 +61,10 @@ namespace Grupparbete_Bankapp
         }
 
 
-
-        //here i count a wrong password
-        public void AddFailedLoginAttempt()
-        {
-            failedLoginAttempts = failedLoginAttempts + 1;
-        }
-
-        public int GetFailedLoginAttempts()
-        {
-            return failedLoginAttempts;
-
-        }
-
-
-        //three wrong passwords lock this user 
-        public bool IsLocked()
-        {
-            if (failedLoginAttempts >= 3)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        // A correct password clears the wrong attempts.
-        public void ResetFailedLoginAttempts()
-        {
-            failedLoginAttempts = 0;
-
-        }
-
         public override string ToString()
         {
 
-            return $"Username: {UserName}\nFull name: {FullName}\nRole: {AccountType}";
+            return $"UserName: {UserName}\nPassword: {Password}\nFullName: {FullName}\nAccountType: {AccountType}";
         }
 
     }

@@ -7,17 +7,15 @@ namespace Grupparbete_Bankapp
     internal class SystemAccount
     {
         private List<Account> accountList = new List<Account>();
-
-        private AccountCreation accountCreation;
-        private LogInAccount logInAccount;
+        AccountCreation accountCreation = new AccountCreation();
+        LogInAccount logInAccount = new LogInAccount();
 
         Account? ActiveAccount;
 
-        public SystemAccount(TransactionInput input)
+        bool SystemBlock = false;
+
+        public SystemAccount()
         {
-            //here i let waiting transfer run while admin creates a user
-            accountCreation = new AccountCreation(input);
-            logInAccount = new LogInAccount(input);
             Account account1 = new Account("User1", "12345", "User", AccountType.User);
             Account account2 = new Account("Admin1", "12345", "Admin", AccountType.Admin);
             Account account3 = new Account("Owner1", "12345", "Owner", AccountType.Owner);
@@ -26,7 +24,7 @@ namespace Grupparbete_Bankapp
             accountList.Add(account3);
         }
 
-        private void CreateAccount()
+        public void CreateAccount()
         {
             Account? account = accountCreation.CreateAccount(accountList);
             if (account != null)
@@ -37,7 +35,7 @@ namespace Grupparbete_Bankapp
         {
             if (ActiveAccount == null || ActiveAccount.GetAccountType() != AccountType.Admin)
             {
-                Console.WriteLine("Only administrators can create users.");
+                Console.WriteLine("You have to log in as admin first");
                 return;
             }
 
@@ -47,7 +45,7 @@ namespace Grupparbete_Bankapp
 
         public Account? LogInAccount()
         {
-            ActiveAccount = logInAccount.LogIn(accountList);
+            ActiveAccount = logInAccount.LogIn(accountList, ref SystemBlock);
             return ActiveAccount;
 
         }
@@ -61,5 +59,6 @@ namespace Grupparbete_Bankapp
             }
         }
 
+        public bool SystemBlockStatus() => SystemBlock;
     }
 }
