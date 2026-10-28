@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Security.Principal;
 
 namespace Grupparbete_Bankapp
 {
@@ -46,17 +47,19 @@ namespace Grupparbete_Bankapp
                 if (bank.Transactions.IsAdmin(user) == true)
                 { 
                     Console.WriteLine("  3. Show all bank accounts"); 
-                } 
+                }
 
-                Console.WriteLine("  4. Show accounts for a user");
+                Console.WriteLine("  4. Show my accounts");
                 Console.WriteLine("  5. Transactions");
                 if (bank.Transactions.IsAdmin(user) == true)
                 {
                     Console.WriteLine("  6. Create user");
                 }
 
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("  0. Exit");
+                Console.WriteLine("  7. Deposit money");
+
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("  0. Log out");
                 Console.ResetColor();
 
                 Console.WriteLine("--------------------------------");
@@ -108,11 +111,15 @@ namespace Grupparbete_Bankapp
                         systemAccount.CreateAccountAsAdmin();
                         break;
 
+                    case "7":
+                        Deposit();
+                        break;
+
+
                     case "0":
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine();
-                        Console.WriteLine("Thank you for using CHAS BANK!");
-                        Console.WriteLine("Goodbye!");
+                        Console.WriteLine("You are now logged out.");
                         Console.ResetColor();
                         running = false;
                         break;
@@ -126,40 +133,21 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        private void ShowLogo()
+        public static void ShowLogo()
         {
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Cyan;
 
-            Console.WriteLine(
-                @"   ______ _   _    _    ____   ____    _    _   _ _  __"
-            );
-            Console.WriteLine(
-                @"  / ___/ | | |  / \  / ___| / ___|  / \  | \ | | |/ /"
-            );
-            Console.WriteLine(
-                @" | |   | |_| | / _ \| |    | |     / _ \ |  \| | ' /"
-            );
-            Console.WriteLine(
-                @" | |___|  _  |/ ___ \ |___ | |___ / ___ \| |\  | . \"
-            );
-            Console.WriteLine(
-                @"  \____|_| |_/_/   \_\____| \____/_/   \_\_| \_|_|\_\"
-            );
+            Console.WriteLine(@"  ____   _   _      _      ____      ____       _      _   _   _  __");
+            Console.WriteLine(@" / ___| | | | |    / \    / ___|    | __ )     / \    | \ | | | |/ /");
+            Console.WriteLine(@"| |     | |_| |   / _ \   \___ \    |  _ \    / _ \   |  \| | | ' /");
+            Console.WriteLine(@"| |___  |  _  |  / ___ \   ___) |   | |_) |  / ___ \  | |\  | | . \");
+            Console.WriteLine(@" \____| |_| |_| /_/   \_\ |____/    |____/  /_/   \_\ |_| \_| |_|\_\");
 
-            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine();
-            Console.WriteLine("======================================================");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("                    CHAS BANK");
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("======================================================");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("          Welcome to your banking experience!");
             Console.ResetColor();
-
+            Console.WriteLine("Welcome to CHAS BANK.");
             Console.WriteLine();
         }
 
@@ -250,6 +238,49 @@ namespace Grupparbete_Bankapp
 
             Console.WriteLine();
         }
+
+        private void Deposit()
+        {
+            if (bank.Transactions.GetAccounts(user).Count == 0)
+            {
+                Console.WriteLine("Open a bank account first.");
+                return;
+            }
+
+            bank.ShowAccountsForUser(user.GetUserName());
+
+            int accountNumber = transactionInput.ReadNumber("Account number: ");
+
+            decimal amount = transactionInput.ReadDecimal("Amount in the account's currency: ");
+
+            if (transactionInput.EndOfInput == true)
+            {
+                return;
+            }
+
+            bool added = bank.Transactions.Deposit(user, accountNumber, amount);
+
+            if (added == false)
+            {
+                Console.WriteLine("Check your account number and amount. Use an amount over 0 and up to 10000 with up to two decimals.");
+                return;
+            }
+
+            Console.WriteLine("The deposit is scheduled for the next quarter-hour.");
+
+            foreach (BankAccount account in bank.Transactions.GetAccounts(user))
+            {
+                if (account.Number == accountNumber && account.AccountType == BankAccountType.Savings)
+                {
+                    // Here I show the interest before the deposit goes through.
+                    decimal interest = account.GetSavingsInterest(amount);
+                    Console.WriteLine($"Estimated interest for one year at 2%: {interest:F2} {account.Currency}");
+                }
+            }
+
+
+        }
+
 
         private void ShowTransactionsMenu()
         {
