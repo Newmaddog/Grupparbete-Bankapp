@@ -6,10 +6,19 @@ namespace Grupparbete_Bankapp
     internal class BankMeny
     {
         private readonly Bank bank;
-
-        public BankMeny(Bank bank)
+        private readonly Account user;
+        private TransactionInput transactionInput;
+        private SystemAccount systemAccount;
+        public BankMeny(Bank bank, Account user, SystemAccount systemAccount)
         {
             this.bank = bank;
+
+            // here i keep the user who logged in
+            this.user = user;
+            this.systemAccount = systemAccount;
+
+            // Here I let transfers run while the user types or waits.
+            transactionInput = new TransactionInput(bank.Transactions);
         }
 
         public void ShowMenu()
@@ -19,7 +28,7 @@ namespace Grupparbete_Bankapp
             // Show the bank logo when entering the menu
             ShowLogo();
 
-            while (running)
+            while (running == true && transactionInput.EndOfInput == false)
             {
                 Console.ResetColor();
                 Console.WriteLine();
@@ -33,19 +42,32 @@ namespace Grupparbete_Bankapp
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("  1. Show bank information");
                 Console.WriteLine("  2. Open new account");
-                Console.WriteLine("  3. Show all bank accounts");
+                
+                if (bank.Transactions.IsAdmin(user) == true)
+                { 
+                    Console.WriteLine("  3. Show all bank accounts"); 
+                } 
+
                 Console.WriteLine("  4. Show accounts for a user");
                 Console.WriteLine("  5. Transactions");
+                if (bank.Transactions.IsAdmin(user) == true)
+                {
+                    Console.WriteLine("  6. Create user");
+                }
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("  0. Exit");
                 Console.ResetColor();
 
                 Console.WriteLine("--------------------------------");
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("Choose an option: ");
                 Console.ResetColor();
 
-                string choice = Console.ReadLine() ?? "";
+
+                // Here I read the choice while checking waiting transfers.
+                string choice = transactionInput.ReadText("");
 
                 switch (choice)
                 {
@@ -58,17 +80,32 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "3":
-                        bank.ShowAllAccounts();
+                        // only admin kan see everyone account
+                        if (bank.Transactions.IsAdmin(user) == true)
+
+                        {
+                            bank.ShowAllAccounts();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Only admin can view all accounts.");
+                        }
                         break;
 
                     case "4":
-                        Console.Write("Enter username: ");
-                        string username = Console.ReadLine() ?? "";
-                        bank.ShowAccountsForUser(username);
+                       
+                        // here i show the accounts of the user who logged in 
+
+                        bank.ShowAccountsForUser(user.GetUserName());
                         break;
 
                     case "5":
                         ShowTransactionsMenu();
+                        break;
+
+                    case "6":
+                        // This method also checks that the user is admin.
+                        systemAccount.CreateAccountAsAdmin();
                         break;
 
                     case "0":
@@ -133,11 +170,11 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("========== OPEN NEW ACCOUNT ==========");
             Console.ResetColor();
 
-            Console.Write("Enter username: ");
-            string username = Console.ReadLine() ?? "";
+            // the new account belongs to the user who logged in
+            string username = user.GetUserName();
 
             Console.Write("Enter account name: ");
-            string accountName = Console.ReadLine() ?? "";
+            string accountName = transactionInput.ReadText("");
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -148,7 +185,7 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("2. Savings account");
             Console.Write("Choose an option: ");
 
-            string accountTypeChoice = Console.ReadLine() ?? "";
+            string accountTypeChoice = transactionInput.ReadText("");
 
             BankAccountType? accountType = accountTypeChoice switch
             {
@@ -175,7 +212,7 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("3. USD");
             Console.Write("Choose an option: ");
 
-            string currencyChoice = Console.ReadLine() ?? "";
+            string currencyChoice = transactionInput.ReadText("");
 
             Currency? currency = currencyChoice switch
             {
@@ -216,14 +253,11 @@ namespace Grupparbete_Bankapp
 
         private void ShowTransactionsMenu()
         {
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("========== TRANSACTIONS ==========");
-            Console.ResetColor();
+            // here i use the same transaction as the bank 
+            TransactionMenu transactionMenu = new TransactionMenu(bank.Transactions);
 
-            Console.WriteLine(
-                "Your existing TransactionMenu should be connected here."
-            );
+            // here i open the transaktion menu for the logged in user 
+            transactionMenu.Show(user);
         }
     }
 }

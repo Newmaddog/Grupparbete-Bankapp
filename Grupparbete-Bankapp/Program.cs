@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace Grupparbete_Bankapp
 {
@@ -7,11 +6,17 @@ namespace Grupparbete_Bankapp
     {
         static void Main(string[] args)
         {
-            // Skapa systemkontot
-            SystemAccount systemAccount = new SystemAccount();
-            systemAccount.AccountList();
-            systemAccount.CreateAccount();
-            systemAccount.LogInAccount();
+            // Here I start the program.
+            Start();
+        }
+
+        private static void Start()
+        {
+            Bank bank = new Bank("CHAS BANK");
+            TransactionInput input = new TransactionInput(bank.Transactions);
+            SystemAccount systemAccount = new SystemAccount(input);
+
+            Account? user = systemAccount.LogInAccount();
 
             if (systemAccount.SystemBlockStatus())
             {
@@ -19,16 +24,14 @@ namespace Grupparbete_Bankapp
                 System.Environment.Exit(1);
             }
 
-            // Skapa banken
-            Bank bank = new Bank("CHAS BANK");
+            if (user == null)
+            {
+                return;
+            }
 
-            // Skapa menyn och skicka in banken
-            BankMeny bankMeny = new BankMeny(bank);
+            // Here I use the same user list in the bank menu.
+            BankMeny bankMeny = new BankMeny(bank, user, systemAccount);
             bankMeny.ShowMenu();
-
-
-            // Starta menyn
-         
         }
     }
 }
