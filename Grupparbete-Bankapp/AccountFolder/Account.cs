@@ -70,6 +70,7 @@ namespace Grupparbete_Bankapp
             failedLoginAttempts = failedLoginAttempts + 1;
         }
 
+        // Here I get how many wrong passwords this user has entered.
         public int GetFailedLoginAttempts()
         {
             return failedLoginAttempts;
@@ -93,7 +94,7 @@ namespace Grupparbete_Bankapp
             failedLoginAttempts = 0;
 
         }
-
+        // Here I show the user details without showing the saved password.
         public override string ToString()
         {
 

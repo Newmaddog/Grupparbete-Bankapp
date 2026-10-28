@@ -62,7 +62,7 @@ namespace Grupparbete_Bankapp
         }
 
 
-        //here i work one year interest at 2%
+        // Here I calculate one year's interest at 2% for a savings account.
         public decimal GetSavingsInterest(decimal amount)
         {
             if (AccountType != BankAccountType.Savings || amount <= 0) 

@@ -10,13 +10,14 @@ namespace Grupparbete_Bankapp
         private TransactionService service;
         private TransactionInput input;
 
-        // Displays the menu and handles the user's choices until they choose to go back.
+        // Here I connect the menu to the bank's accounts and transfers.
         public TransactionMenu(TransactionService service)
         {
             this.service = service;
             input = new TransactionInput(service);
         }
 
+        // Here I clear the old menu and show the transaction choices.
         public void Show(Account user)
         {
             bool running = true;
@@ -25,10 +26,8 @@ namespace Grupparbete_Bankapp
             {
                 service.ProcessTransactions(DateTime.Now);
 
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"TRANSACTIONS - {user.GetUserName()}");
-                Console.ResetColor();
+                input.ShowScreen("TRANSACTIONS");
+                Console.WriteLine($"User: {user.GetUserName()}");
 
                 // Displays the next processing time in hours and minutes, for example 14:15.
                 Console.WriteLine($"Next processing: {service.GetNextProcessingTime():HH:mm}");
@@ -54,7 +53,9 @@ namespace Grupparbete_Bankapp
                 switch (choice)
                 {
                     case "1":
+                        input.ShowScreen("MY ACCOUNTS");
                         ShowAccounts(user);
+                        input.WaitForBack();
                         break;
 
                     case "2":
@@ -62,7 +63,9 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "3":
+                        input.ShowScreen("TRANSACTION HISTORY");
                         ShowHistory(user);
+                        input.WaitForBack();
                         break;
 
                     case "4":
@@ -74,13 +77,13 @@ namespace Grupparbete_Bankapp
                         break;
 
                     default:
-                        Console.WriteLine("Invalid choice. Please try again.");
+                        input.ShowError("Please choose one of the listed numbers.");
                         break;
                 }
             }
         }
 
-        // Displays the customer's accounts, balances, and available funds.
+        // Here I show this user's accounts and the money still available.
         private void ShowAccounts(Account user)
         {
             List<BankAccount> accounts = service.GetAccounts(user);
@@ -92,21 +95,43 @@ namespace Grupparbete_Bankapp
 
             foreach (BankAccount account in accounts)
             {
-                Console.WriteLine(
-                    $"{account.Number} | {account.Name} | Type: {account.AccountType} | Balance: {account.Balance} {account.Currency} | Available: {service.GetAvailableBalance(account)}");
+                Console.WriteLine($"Account: {account.Number} | {account.Name} | {account.AccountType}");
+                Console.WriteLine($"Balance: {account.Balance:F2} {account.Currency}");
+                Console.WriteLine($"Available: {service.GetAvailableBalance(account):F2} {account.Currency}");
+                Console.WriteLine();
             }
         }
 
+        // Here I queue a transfer to another account and let 0 cancel.
         private void Transfer(Account user)
         {
+            input.ShowScreen("TRANSFER MONEY");
+
+            if (service.GetAccounts(user).Count == 0)
+            {
+                input.ShowError("Open a bank account first.");
+                return;
+            }
+
             ShowAccounts(user);
 
-            int fromNumber = input.ReadNumber("From account number: ");
-            int toNumber = input.ReadNumber("To account number: ");
+            int fromNumber = input.ReadNumber("From account number (0 to cancel): ");
 
-            decimal amount = input.ReadDecimal("Amount in the sender's currency: ");
+            if (fromNumber == 0 || input.EndOfInput == true)
+            {
+                return;
+            }
 
-            if (input.EndOfInput == true)
+            int toNumber = input.ReadNumber("To account number (0 to cancel): ");
+
+            if (toNumber == 0 || input.EndOfInput == true)
+            {
+                return;
+            }
+
+            decimal amount = input.ReadDecimal("Amount in the sender's currency (0 to cancel): ");
+
+            if (amount == 0 || input.EndOfInput == true)
             {
                 return;
             }
@@ -115,16 +140,19 @@ namespace Grupparbete_Bankapp
 
             if (added == true)
             {
-                Console.WriteLine("The transfer is scheduled for the next quarter-hour.");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Transfer scheduled for {service.GetNextProcessingTime():HH:mm}.");
+                Console.ResetColor();
+
+                input.WaitForBack();
             }
             else
             {
-                Console.WriteLine(
-                    "The transfer could not be added. Check the accounts, account ownership, amount, available balance, and today's exchange rates.");
+                input.ShowError("Check the account numbers, your available balance, the amount and today's exchange rates.");
             }
         }
 
-        // Here I show deposits and transfers that are waiting done or failed.
+        // Here I show this user's waiting, completed and failed transactions.
         private void ShowHistory(Account user)
         {
             List<Transaction> history = service.GetHistory(user);
@@ -143,14 +171,14 @@ namespace Grupparbete_Bankapp
                 if (transaction.IsDeposit == true)
                 {
                     Console.WriteLine($"Deposit to account: {transaction.ToAccount}");
-                    Console.WriteLine($"Amount: {transaction.Amount} {transaction.ToCurrency}");
+                    Console.WriteLine($"Amount: {transaction.Amount:F2} {transaction.ToCurrency}");
                 }
                 else
                 {
                     Console.WriteLine($"From account: {transaction.FromAccount}");
                     Console.WriteLine($"To account: {transaction.ToAccount}");
-                    Console.WriteLine($"Sent: {transaction.Amount} {transaction.FromCurrency}");
-                    Console.WriteLine($"Received: {transaction.ReceivedAmount} {transaction.ToCurrency}");
+                    Console.WriteLine($"Sent: {transaction.Amount:F2} {transaction.FromCurrency}");
+                    Console.WriteLine($"Received: {transaction.ReceivedAmount:F2} {transaction.ToCurrency}");
                 }
 
                 Console.WriteLine($"Status: {transaction.Status}");
@@ -159,34 +187,46 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine();
             }
         }
-        
 
-        // Only users with the admin role can update exchange rates.
+
+        // Here admin enters today's EUR and USD rates in SEK.
         private void UpdateRates(Account user)
         {
+            input.ShowScreen("EXCHANGE RATES");
+
             if (service.IsAdmin(user) == false)
             {
-                Console.WriteLine("Only administrators can update exchange rates.");
+                input.ShowError("Only administrators can update exchange rates.");
                 return;
             }
 
-            decimal euro = input.ReadDecimal("How many SEK is 1 EUR worth? ");
-            decimal dollar = input.ReadDecimal("How many SEK is 1 USD worth? ");
+            decimal euro = input.ReadDecimal("SEK for 1 EUR (0 to cancel): ");
 
-            if (input.EndOfInput == true)
+            if (euro == 0 || input.EndOfInput == true)
             {
                 return;
             }
 
-            if (service.UpdateRates(user, euro, dollar) == true)
+            decimal dollar = input.ReadDecimal("SEK for 1 USD (0 to cancel): ");
+
+            if (dollar == 0 || input.EndOfInput == true)
             {
-                Console.WriteLine(
-                    $"Exchange rates saved for {service.GetRatesDate():yyyy-MM-dd}.");
+                return;
+            }
+
+            bool updated = service.UpdateRates(user, euro, dollar);
+
+            if (updated == true)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Exchange rates saved for {service.GetRatesDate():yyyy-MM-dd}.");
+                Console.ResetColor();
+
+                input.WaitForBack();
             }
             else
             {
-                Console.WriteLine(
-                    "Exchange rates must be between 0.0001 and 1000 SEK.");
+                input.ShowError("Exchange rates must be between 0.0001 and 1000 SEK.");
             }
         }
     }

@@ -47,8 +47,14 @@ namespace Grupparbete_Bankapp
             return newAccount;
         }
 
+        // Here admin can see all bank accounts and their balances.
         public void ShowAllAccounts()
         {
+            if (BankAccounts.Count == 0)
+            {
+                Console.WriteLine("No bank accounts have been opened yet.");
+            }
+
             foreach (BankAccount account in BankAccounts)
             {
                 Console.WriteLine(
@@ -57,25 +63,35 @@ namespace Grupparbete_Bankapp
                     $"Name: {account.Name} | " +
                     $"Type: {account.AccountType} | " +
                     $"Currency: {account.Currency} | " +
-                    $"Balance: {account.Balance}"
+                    $"Balance: {account.Balance:F2}"
                 );
             }
         }
 
+        // Here I show only the accounts that belong to this username.
         public void ShowAccountsForUser(string username)
         {
+            bool found = false;
+
             foreach (BankAccount account in BankAccounts)
             {
                 if (account.OwnerUsername == username)
                 {
+                    found = true;
+
                     Console.WriteLine(
                         $"Account: {account.Number} | " +
                         $"Name: {account.Name} | " +
                         $"Type: {account.AccountType} | " +
                         $"Currency: {account.Currency} | " +
-                        $"Balance: {account.Balance}"
+                        $"Balance: {account.Balance:F2}"
                     );
                 }
+            }
+
+            if (found == false)
+            {
+                Console.WriteLine("You do not have any bank accounts yet.");
             }
         }
     }

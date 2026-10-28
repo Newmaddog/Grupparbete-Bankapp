@@ -10,12 +10,14 @@ namespace Grupparbete_Bankapp
 
         private AccountCreation accountCreation;
         private LogInAccount logInAccount;
+        private TransactionInput input;
 
         Account? ActiveAccount;
 
         public SystemAccount(TransactionInput input)
         {
             //here i let waiting transfer run while admin creates a user
+            this.input = input;
             accountCreation = new AccountCreation(input);
             logInAccount = new LogInAccount(input);
             Account account1 = new Account("User1", "12345", "User", AccountType.User);
@@ -26,18 +28,29 @@ namespace Grupparbete_Bankapp
             accountList.Add(account3);
         }
 
+
+        // Here I save the user after admin confirms the details.
         private void CreateAccount()
         {
             Account? account = accountCreation.CreateAccount(accountList);
+
             if (account != null)
+            {
                 accountList.Add(account);
+
+                input.ShowScreen("USER CREATED");
+                Console.WriteLine($"Username: {account.GetUserName()}");
+                Console.WriteLine($"Role: {account.GetAccountType()}");
+                input.WaitForBack();
+            }
         }
 
+        // Here I check that the logged-in user is admin before creating a user.
         public void CreateAccountAsAdmin()
         {
             if (ActiveAccount == null || ActiveAccount.GetAccountType() != AccountType.Admin)
             {
-                Console.WriteLine("Only administrators can create users.");
+                input.ShowError("Only administrators can create users.");
                 return;
             }
 
@@ -45,12 +58,19 @@ namespace Grupparbete_Bankapp
 
         }
 
+        // Here I keep the user who just logged in.
         public Account? LogInAccount()
         {
             ActiveAccount = logInAccount.LogIn(accountList);
             return ActiveAccount;
 
         }
+        // Here I end the login without deleting the users or their bank accounts.
+        public void LogOut()
+        {
+            ActiveAccount = null;
+        }
+
 
         public void AccountList()
         {

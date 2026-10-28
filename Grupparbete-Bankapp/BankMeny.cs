@@ -22,60 +22,43 @@ namespace Grupparbete_Bankapp
             transactionInput = new TransactionInput(bank.Transactions);
         }
 
+        // Here I show the bank menu for the user who logged in.
         public void ShowMenu()
         {
             bool running = true;
 
-            // Show the bank logo when entering the menu
-            ShowLogo();
-
             while (running == true && transactionInput.EndOfInput == false)
             {
+                ShowLogo();
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"Welcome, {user.GetFullName()}.");
+                Console.WriteLine("MAIN MENU");
                 Console.ResetColor();
                 Console.WriteLine();
 
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("================================");
-                Console.WriteLine("           MAIN MENU");
-                Console.WriteLine("================================");
-                Console.ResetColor();
+                Console.WriteLine("1. Show bank information");
+                Console.WriteLine("2. Open a bank account");
+                Console.WriteLine("3. View my accounts");
+                Console.WriteLine("4. Transactions");
+                Console.WriteLine("5. Deposit money");
 
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("  1. Show bank information");
-                Console.WriteLine("  2. Open new account");
-                
-                if (bank.Transactions.IsAdmin(user) == true)
-                { 
-                    Console.WriteLine("  3. Show all bank accounts"); 
-                }
-
-                Console.WriteLine("  4. Show my accounts");
-                Console.WriteLine("  5. Transactions");
                 if (bank.Transactions.IsAdmin(user) == true)
                 {
-                    Console.WriteLine("  6. Create user");
+                    Console.WriteLine("6. View all bank accounts");
+                    Console.WriteLine("7. Create user");
                 }
 
-                Console.WriteLine("  7. Deposit money");
+                Console.WriteLine("0. Log out");
 
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("  0. Log out");
-                Console.ResetColor();
-
-                Console.WriteLine("--------------------------------");
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("Choose an option: ");
-                Console.ResetColor();
-
-
-                // Here I read the choice while checking waiting transfers.
-                string choice = transactionInput.ReadText("");
+                string choice = transactionInput.ReadText("Choose an option: ");
 
                 switch (choice)
                 {
                     case "1":
+                        transactionInput.ShowScreen("BANK INFORMATION");
                         bank.ShowInfo();
+                        transactionInput.WaitForBack();
                         break;
 
                     case "2":
@@ -83,56 +66,49 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "3":
-                        // only admin kan see everyone account
-                        if (bank.Transactions.IsAdmin(user) == true)
-
-                        {
-                            bank.ShowAllAccounts();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Only admin can view all accounts.");
-                        }
+                        transactionInput.ShowScreen("MY ACCOUNTS");
+                        bank.ShowAccountsForUser(user.GetUserName());
+                        transactionInput.WaitForBack();
                         break;
 
                     case "4":
-                       
-                        // here i show the accounts of the user who logged in 
-
-                        bank.ShowAccountsForUser(user.GetUserName());
-                        break;
-
-                    case "5":
                         ShowTransactionsMenu();
                         break;
 
-                    case "6":
-                        // This method also checks that the user is admin.
-                        systemAccount.CreateAccountAsAdmin();
-                        break;
-
-                    case "7":
+                    case "5":
                         Deposit();
                         break;
 
+                    case "6":
+                        transactionInput.ShowScreen("ALL BANK ACCOUNTS");
+
+                        if (bank.Transactions.IsAdmin(user) == true)
+                        {
+                            bank.ShowAllAccounts();
+                            transactionInput.WaitForBack();
+                        }
+                        else
+                        {
+                            transactionInput.ShowError("Only administrators can view all accounts.");
+                        }
+                        break;
+
+                    case "7":
+                        systemAccount.CreateAccountAsAdmin();
+                        break;
 
                     case "0":
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine();
-                        Console.WriteLine("You are now logged out.");
-                        Console.ResetColor();
                         running = false;
                         break;
 
                     default:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Invalid choice. Please try again.");
-                        Console.ResetColor();
+                        transactionInput.ShowError("Please choose one of the listed numbers.");
                         break;
                 }
             }
         }
 
+        // Here I clear the old screen and show the bank logo.
         public static void ShowLogo()
         {
             Console.Clear();
@@ -151,109 +127,119 @@ namespace Grupparbete_Bankapp
             Console.WriteLine();
         }
 
+        // Here I open a bank account for the user who logged in.
         private void OpenNewAccount()
         {
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("========== OPEN NEW ACCOUNT ==========");
-            Console.ResetColor();
+            transactionInput.ShowScreen("OPEN A BANK ACCOUNT");
+            Console.WriteLine("0. Cancel");
 
-            // the new account belongs to the user who logged in
-            string username = user.GetUserName();
+            string accountName = transactionInput.ReadText("Account name: ").Trim();
 
-            Console.Write("Enter account name: ");
-            string accountName = transactionInput.ReadText("");
-
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Select account type:");
-            Console.ResetColor();
-
-            Console.WriteLine("1. Regular account");
-            Console.WriteLine("2. Savings account");
-            Console.Write("Choose an option: ");
-
-            string accountTypeChoice = transactionInput.ReadText("");
-
-            BankAccountType? accountType = accountTypeChoice switch
+            if (accountName == "0" || transactionInput.EndOfInput == true)
             {
-                "1" => BankAccountType.Regular,
-                "2" => BankAccountType.Savings,
-                _ => null
-            };
+                return;
+            }
 
-            if (accountType == null)
+            if (accountName == "")
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid account type.");
-                Console.ResetColor();
+                transactionInput.ShowError("Account name cannot be empty.");
                 return;
             }
 
             Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Select currency:");
-            Console.ResetColor();
+            Console.WriteLine("1. Regular account");
+            Console.WriteLine("2. Savings account");
+            Console.WriteLine("0. Cancel");
 
+            string typeChoice = transactionInput.ReadText("Account type: ");
+
+            if (typeChoice == "0" || transactionInput.EndOfInput == true)
+            {
+                return;
+            }
+
+            BankAccountType accountType = BankAccountType.Regular;
+
+            if (typeChoice == "2")
+            {
+                accountType = BankAccountType.Savings;
+            }
+            else if (typeChoice != "1")
+            {
+                transactionInput.ShowError("Please choose 1, 2 or 0.");
+                return;
+            }
+
+            Console.WriteLine();
             Console.WriteLine("1. SEK");
             Console.WriteLine("2. EUR");
             Console.WriteLine("3. USD");
-            Console.Write("Choose an option: ");
+            Console.WriteLine("0. Cancel");
 
-            string currencyChoice = transactionInput.ReadText("");
+            string currencyChoice = transactionInput.ReadText("Currency: ");
 
-            Currency? currency = currencyChoice switch
+            if (currencyChoice == "0" || transactionInput.EndOfInput == true)
             {
-                "1" => Currency.SEK,
-                "2" => Currency.EUR,
-                "3" => Currency.USD,
-                _ => null
-            };
-
-            if (currency == null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid currency.");
-                Console.ResetColor();
                 return;
             }
 
-            BankAccount newAccount = bank.OpenNewAccount(
-                username,
-                accountName,
-                currency.Value,
-                accountType.Value
-            );
+            Currency currency = Currency.SEK;
 
-            Console.WriteLine();
+            if (currencyChoice == "2")
+            {
+                currency = Currency.EUR;
+            }
+            else if (currencyChoice == "3")
+            {
+                currency = Currency.USD;
+            }
+            else if (currencyChoice != "1")
+            {
+                transactionInput.ShowError("Please choose 1, 2, 3 or 0.");
+                return;
+            }
+
+            // Here I use the logged-in user as the account owner.
+            BankAccount account = bank.OpenNewAccount(user.GetUserName(), accountName, currency, accountType);
+
+            transactionInput.ShowScreen("BANK ACCOUNT CREATED");
+
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Account created successfully!");
+            Console.WriteLine("Your bank account has been created.");
             Console.ResetColor();
 
-            Console.WriteLine($"Account number: {newAccount.Number}");
-            Console.WriteLine($"Account name:   {newAccount.Name}");
-            Console.WriteLine($"Account type:   {newAccount.AccountType}");
-            Console.WriteLine($"Currency:       {newAccount.Currency}");
-            Console.WriteLine($"Balance:        {newAccount.Balance}");
+            Console.WriteLine($"Account number: {account.Number}");
+            Console.WriteLine($"Name: {account.Name}");
+            Console.WriteLine($"Type: {account.AccountType}");
+            Console.WriteLine($"Balance: {account.Balance:F2} {account.Currency}");
 
-            Console.WriteLine();
+            transactionInput.WaitForBack();
         }
 
+        // Here I put a deposit in the queue for the next quarter-hour.
         private void Deposit()
         {
+            transactionInput.ShowScreen("DEPOSIT MONEY");
+
             if (bank.Transactions.GetAccounts(user).Count == 0)
             {
-                Console.WriteLine("Open a bank account first.");
+                transactionInput.ShowError("Open a bank account first.");
                 return;
             }
 
             bank.ShowAccountsForUser(user.GetUserName());
+            Console.WriteLine();
 
-            int accountNumber = transactionInput.ReadNumber("Account number: ");
+            int accountNumber = transactionInput.ReadNumber("Account number (0 to cancel): ");
 
-            decimal amount = transactionInput.ReadDecimal("Amount in the account's currency: ");
+            if (accountNumber == 0 || transactionInput.EndOfInput == true)
+            {
+                return;
+            }
 
-            if (transactionInput.EndOfInput == true)
+            decimal amount = transactionInput.ReadDecimal("Amount in the account's currency (0 to cancel): ");
+
+            if (amount == 0 || transactionInput.EndOfInput == true)
             {
                 return;
             }
@@ -262,32 +248,34 @@ namespace Grupparbete_Bankapp
 
             if (added == false)
             {
-                Console.WriteLine("Check your account number and amount. Use an amount over 0 and up to 10000 with up to two decimals.");
+                transactionInput.ShowError("Use your own account and an amount above 0 and up to 10000 with at most two decimal places.");
                 return;
             }
 
-            Console.WriteLine("The deposit is scheduled for the next quarter-hour.");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Deposit scheduled for {bank.Transactions.GetNextProcessingTime():HH:mm}.");
+            Console.ResetColor();
 
             foreach (BankAccount account in bank.Transactions.GetAccounts(user))
             {
                 if (account.Number == accountNumber && account.AccountType == BankAccountType.Savings)
                 {
-                    // Here I show the interest before the deposit goes through.
+                    // Here I show how much interest the deposit could earn in one year.
                     decimal interest = account.GetSavingsInterest(amount);
+
                     Console.WriteLine($"Estimated interest for one year at 2%: {interest:F2} {account.Currency}");
                 }
             }
 
+            transactionInput.WaitForBack();
+
 
         }
 
-
+        // Here I open transactions using the bank's service and the logged-in user.
         private void ShowTransactionsMenu()
         {
-            // here i use the same transaction as the bank 
             TransactionMenu transactionMenu = new TransactionMenu(bank.Transactions);
-
-            // here i open the transaktion menu for the logged in user 
             transactionMenu.Show(user);
         }
     }

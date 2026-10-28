@@ -211,7 +211,7 @@ namespace Grupparbete_Bankapp
             return available;
         }
 
-
+        // Here I check the accounts and available money before queueing a transfer.
         public bool Transfer(Account user, int fromNumber, int toNumber, decimal amount)
 
         {
@@ -297,7 +297,7 @@ namespace Grupparbete_Bankapp
 
 
 
-        // Here I move the money for waiting transfers when their planned time has arrived.
+        // Here I process waiting transfers and deposits when their time has arrived.
         public int ProcessTransactions(DateTime currentTime)
         {
             int completed = 0;
@@ -388,7 +388,7 @@ namespace Grupparbete_Bankapp
 
         }
 
-        // Here I get transfers to and from the customer's accounts, with each transfer listed only once.
+        // Here I get the user's transfers and deposits without adding the same one twice.
         public List<Transaction> GetHistory(Account user)
         {
             List<Transaction> result = new List<Transaction>();

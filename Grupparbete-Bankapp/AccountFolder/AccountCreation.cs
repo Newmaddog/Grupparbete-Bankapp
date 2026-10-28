@@ -16,197 +16,260 @@ namespace Grupparbete_Bankapp
             this.input = input;
         }
 
+        // Here I collect the details and stop without saving if admin chooses 0.
         public Account? CreateAccount(List<Account> accountList)
         {
 
-            Console.WriteLine("CREATE USER");
-            string userName = "";
-            string passWord = "";
-            string fullName = "";
-            AccountType accountType;
-            userName = SetUserName(accountList);
-            if (input.EndOfInput == true)
+            string userName = SetUserName(accountList);
+
+            if (userName == "0" || input.EndOfInput == true)
             {
                 return null;
             }
 
+            string passWord = SetPassword();
 
-            passWord = SetPassword();
-            if (input.EndOfInput == true)
+            if (passWord == "0" || input.EndOfInput == true)
             {
                 return null;
             }
 
-            fullName = SetFullName();
+            string fullName = SetFullName();
 
-            if (input.EndOfInput == true)
+            if (fullName == "0" || input.EndOfInput == true)
             {
                 return null;
             }
 
-            accountType = SetAccountType();
+            AccountType? selectedType = SetAccountType();
 
-            if (input.EndOfInput == true)
+            // Here I stop if admin chose 0.
+            if (selectedType == null)
             {
                 return null;
             }
 
-            Account? account = ConfirmCreateAccount(userName, passWord, fullName, accountType, accountList);
-            return account;
+            AccountType accountType = selectedType.Value;
+
+            return ConfirmCreateAccount(userName, passWord, fullName, accountType, accountList);
         }
 
+        // Here I ask for a username that is filled in and not already used.
         private string SetUserName(List<Account> accountList)
         {
-            string userName = "";
-
-            do
+            while (input.EndOfInput == false)
             {
-                //not sure yet if i will use it
-                //Constants.WriteExitText();
-                Console.Write("Username: ");
-                userName = input.ReadText("");
-                if (Constants.IsNotUsableWordsUtilize(userName))
-                {
-                    Console.Clear();
-                    Console.WriteLine("This username is reserved. Choose another username.");
-                    userName = "";
-                    continue;
-                }
-                if (accountList.Any(a => a.GetUserName() == userName))
-                {
-                    if (userName == "")
-                    {
-                        Console.WriteLine("Username cannot be empty.");
-                        continue;
-                    }
-                    Console.WriteLine("This username is already taken. Choose another username.");
-                    userName = "";
-                }
-            } 
-            
-            while (userName == "" && input.EndOfInput == false);
+                input.ShowScreen("CREATE USER - USERNAME");
+                Console.WriteLine("0. Cancel");
 
-            return userName;
+                string userName = input.ReadText("Username: ").Trim();
+
+                if (userName == "0" || input.EndOfInput == true)
+                {
+                    return "0";
+                }
+
+                bool alreadyUsed = false;
+
+                // Here I check that no other user has this username.
+                foreach (Account account in accountList)
+                {
+                    if (account.GetUserName() == userName)
+                    {
+                        alreadyUsed = true;
+                    }
+                }
+
+                if (userName == "")
+                {
+                    input.ShowError("Username cannot be empty.");
+                }
+                else if (alreadyUsed == true)
+                {
+                    input.ShowError("This username is already in use.");
+                }
+                else
+                {
+                    return userName;
+                }
+            }
+
+            return "0";
         }
 
+        // Here I ask for a password with at least five characters.
         private string SetPassword()
         {
-            string passWord;
-            do
+            while (input.EndOfInput == false)
             {
-                Console.WriteLine("The password must contain at least 5 characters.");
-                Console.Write("Password: ");
-                passWord = input.ReadText("");
+                input.ShowScreen("CREATE USER - PASSWORD");
+                Console.WriteLine("Use at least 5 characters.");
+                Console.WriteLine("0. Cancel");
 
-                if (passWord.Length < 5)
+                string password = input.ReadText("Password: ");
+
+                if (password == "0" || input.EndOfInput == true)
                 {
-                    Console.WriteLine("The password is too short. Please try again.");
+                    return "0";
                 }
 
-            } 
-            
-            while (passWord.Length < 5 && input.EndOfInput == false);
+                if (password.Length >= 5)
+                {
+                    return password;
+                }
 
-            return passWord;
+                input.ShowError("The password is too short. Please try again.");
+            }
+
+            return "0";
         }
 
+        // Here I ask for the full name and let 0 cancel.
         private string SetFullName()
         {
-            string fullName = "";
-            do
+            while (input.EndOfInput == false)
             {
-                Console.WriteLine("Enter the user's full name.");
-                Console.Write("Full name: ");
-                fullName = input.ReadText("");
-                if (fullName == "")
-                {
-                    Console.WriteLine("Full name cannot be empty.");
-                }
-            }  
-            while (fullName == "" && input.EndOfInput == false);
-            return fullName;
-        }
-
-        private AccountType SetAccountType()
-        {
-            AccountType accountType;
-            Console.WriteLine("Select a user role:");
-            bool enumSet;
-            do
-            {
-                Console.WriteLine("1. User\n2. Admin\n3. Owner");
-
-                enumSet = Enum.TryParse(Console.ReadLine(), out accountType)
-                    && Enum.IsDefined(typeof(AccountType), accountType);
-
-                if (!enumSet)
-                {
-                    Console.WriteLine("Please choose 1, 2 or 3.");
-                }
-
-            }  while (enumSet == false && input.EndOfInput == false);
-
-            return accountType;
-        }
-
-        private Account? ConfirmCreateAccount(string userName, string password,
-           string fullName, AccountType accountType, List<Account> accountList)
-        {
-            int menuChoice = -1;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("CONFIRM USER\n");
-                Console.WriteLine($"Username: {userName}\nFull name: {fullName}\nRole: {accountType}\n");
-
+                input.ShowScreen("CREATE USER - FULL NAME");
                 Console.WriteLine("0. Cancel");
-                Console.WriteLine("1. Create user");
-                Console.WriteLine("2. Change username");
-                Console.WriteLine("3. Change password");
-                Console.WriteLine("4. Change full name");
-                Console.WriteLine("5. Change user role");
-                string choice = input.ReadText("");
 
-                // Here I stop if there is no more input.
+                string fullName = input.ReadText("Full name: ").Trim();
+
+                if (fullName == "0" || input.EndOfInput == true)
+                {
+                    return "0";
+                }
+
+                if (fullName != "")
+                {
+                    return fullName;
+                }
+
+                input.ShowError("Full name cannot be empty.");
+            }
+
+            return "0";
+        }
+
+        // Here I turn the menu number into the user's role.
+        private AccountType? SetAccountType()
+        {
+            while (input.EndOfInput == false)
+            {
+                input.ShowScreen("CREATE USER - ROLE");
+                Console.WriteLine("1. User");
+                Console.WriteLine("2. Admin");
+                Console.WriteLine("3. Owner");
+                Console.WriteLine("0. Cancel");
+
+                string choice = input.ReadText("Choose an option: ");
+
                 if (input.EndOfInput == true)
                 {
                     return null;
                 }
 
-                if (!int.TryParse(choice, out menuChoice))
+                switch (choice)
                 {
-                    Console.WriteLine("Invalid input. Press Enter to try again.");
-                    input.ReadText("");
-                    Console.Clear();
-                    menuChoice = -1;
-                    continue;
-                }
+                    case "1":
+                        return AccountType.User;
 
-                switch (menuChoice)
-                {
-                    case 2:
-                        userName = SetUserName(accountList);
-                        break;
-                    case 3:
-                        password = SetPassword();
-                        break;
-                    case 4:
-                        fullName = SetFullName();
-                        break;
-                    case 5:
-                        accountType = SetAccountType();
+                    case "2":
+                        return AccountType.Admin;
+
+                    case "3":
+                        return AccountType.Owner;
+
+                    case "0":
+                        return null;
+
+                    default:
+                        input.ShowError("Please choose 1, 2, 3 or 0.");
                         break;
                 }
-
-            } while (menuChoice != 0 && menuChoice != 1 && input.EndOfInput == false);
-
-            if (menuChoice == 0 || input.EndOfInput == true)
-            {
-                return null;
             }
 
-            Account account = new(userName, password, fullName, accountType);
-            return account;
+            return null;
+        }
+
+        // Here admin can check or change the details before creating the user.
+        private Account? ConfirmCreateAccount(string userName,string password,string fullName,AccountType accountType,List<Account> accountList)
+        {
+            while (input.EndOfInput == false)
+            {
+                input.ShowScreen("CREATE USER - CONFIRM");
+
+                Console.WriteLine($"Username: {userName}");
+                Console.WriteLine($"Full name: {fullName}");
+                Console.WriteLine($"Role: {accountType}");
+                Console.WriteLine();
+
+                Console.WriteLine("1. Create user");
+                Console.WriteLine("2. Change username");
+                Console.WriteLine("3. Change password");
+                Console.WriteLine("4. Change full name");
+                Console.WriteLine("5. Change user role");
+                Console.WriteLine("0. Cancel");
+
+                string choice = input.ReadText("Choose an option: ");
+
+                if (input.EndOfInput == true)
+                {
+                    return null;
+                }
+
+                switch (choice)
+                {
+                    case "1":
+                        return new Account(userName, password, fullName, accountType);
+
+                    case "2":
+                        userName = SetUserName(accountList);
+
+                        if (userName == "0")
+                        {
+                            return null;
+                        }
+                        break;
+
+                    case "3":
+                        password = SetPassword();
+
+                        if (password == "0")
+                        {
+                            return null;
+                        }
+                        break;
+
+                    case "4":
+                        fullName = SetFullName();
+
+                        if (fullName == "0")
+                        {
+                            return null;
+                        }
+                        break;
+
+                    case "5":
+                        AccountType? selectedType = SetAccountType();
+
+                        if (selectedType == null)
+                        {
+                            return null;
+                        }
+
+                        accountType = selectedType.Value;
+                        break;
+
+                    case "0":
+                        return null;
+
+                    default:
+                        input.ShowError("Please choose one of the listed numbers.");
+                        break;
+                }
+            }
+
+            return null;
         }
 
     }

@@ -10,32 +10,25 @@ namespace Grupparbete_Bankapp
             Start();
         }
 
+        // Here I keep the bank running while users log in and out.
         private static void Start()
         {
             Bank bank = new Bank("CHAS BANK");
             TransactionInput input = new TransactionInput(bank.Transactions);
             SystemAccount systemAccount = new SystemAccount(input);
+
             bool running = true;
 
-            // Here I show the logo before anyone logs in.
-            BankMeny.ShowLogo();
-
-            // Logging out does not delete the users, bank accounts or money.
-
+            // Logging out does not delete the bank accounts or money.
             while (running == true && input.EndOfInput == false)
             {
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("========== CHAS BANK ==========");
+                BankMeny.ShowLogo();
 
-                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("1. Log in");
                 Console.WriteLine("0. Exit");
-                Console.ResetColor();
+                Console.WriteLine();
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
                 string choice = input.ReadText("Choose an option: ");
-                Console.ResetColor();
 
                 switch (choice)
                 {
@@ -46,6 +39,8 @@ namespace Grupparbete_Bankapp
                         {
                             BankMeny bankMeny = new BankMeny(bank, user, systemAccount);
                             bankMeny.ShowMenu();
+
+                            systemAccount.LogOut();
                         }
                         break;
 
@@ -54,15 +49,16 @@ namespace Grupparbete_Bankapp
                         break;
 
                     default:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Please choose 1 or 0.");
-                        Console.ResetColor();
+                        input.ShowError("Please choose 1 or 0.");
                         break;
                 }
             }
 
+            Console.Clear();
+            Console.WriteLine("Thank you for using CHAS BANK.");
 
-            
+
+
         }
     }
 }
