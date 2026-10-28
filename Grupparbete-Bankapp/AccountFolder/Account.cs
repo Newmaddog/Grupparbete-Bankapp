@@ -11,6 +11,7 @@ namespace Grupparbete_Bankapp
         private string Password;
         private string FullName;
         private AccountType AccountType;
+        private int failedLoginAttempts;
 
          List<Bank> BankAccountList = new List<Bank>();
 
@@ -21,6 +22,7 @@ namespace Grupparbete_Bankapp
             Password = password;
             FullName = fullName;
             AccountType = accountType;
+            failedLoginAttempts = 0;
         }
 
         public void AddBankAccount(Bank bank)
@@ -61,10 +63,41 @@ namespace Grupparbete_Bankapp
         }
 
 
+
+        //here i count a wrong password
+        public void AddFailedLoginAttempt()
+        {
+            failedLoginAttempts = failedLoginAttempts + 1;
+        }
+
+        public int GetFailedLoginAttempts()
+        {
+            return failedLoginAttempts;
+
+        }
+
+
+        //three wrong passwords lock this user 
+        public bool IsLocked()
+        {
+            if (failedLoginAttempts >= 3)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        // A correct password clears the wrong attempts.
+        public void ResetFailedLoginAttempts()
+        {
+            failedLoginAttempts = 0;
+
+        }
+
         public override string ToString()
         {
 
-            return $"UserName: {UserName}\nPassword: {Password}\nFullName: {FullName}\nAccountType: {AccountType}";
+            return $"Username: {UserName}\nFull name: {FullName}\nRole: {AccountType}";
         }
 
     }
