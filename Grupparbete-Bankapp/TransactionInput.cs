@@ -24,7 +24,9 @@ namespace Grupparbete_Bankapp
             // Check the real clock and finish payments that are due.
             service.ProcessTransactions(DateTime.Now);
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write(prompt);
+            Console.ResetColor();
 
             // ReadLine handles input from a file or another program, including the end of input.
             if (Console.IsInputRedirected == true)
@@ -96,6 +98,55 @@ namespace Grupparbete_Bankapp
             return text;
         }
 
+
+
+        // Here I clear the old screen and show the next heading.
+        public void ShowScreen(string title)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("========================================");
+            Console.WriteLine(title);
+            Console.WriteLine("========================================");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+
+        // Here I keep the result on screen until the user chooses 0.
+        public void WaitForBack()
+        {
+            bool waiting = true;
+
+            while (waiting == true && EndOfInput == false)
+            {
+                Console.WriteLine();
+                string choice = ReadText("0. Back: ");
+
+                if (choice == "0")
+                {
+                    waiting = false;
+                }
+                else if (EndOfInput == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Please choose 0 to go back.");
+                    Console.ResetColor();
+                }
+            }
+        }
+
+        // Here I show the problem and give the user time to read it.
+        public void ShowError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
+            WaitForBack();
+        }
+
+
+
         // Keep asking until the user enters a whole number.
         public int ReadNumber(string prompt)
         {
@@ -118,7 +169,9 @@ namespace Grupparbete_Bankapp
                 }
                 catch
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Enter a whole number.");
+                    Console.ResetColor();
                 }
             }
 
@@ -207,7 +260,9 @@ namespace Grupparbete_Bankapp
 
                 if (valid == false)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Enter a number such as 100.50 or 100,50. Write one thousand as 1000.");
+                    Console.ResetColor();
                 }
             }
 
