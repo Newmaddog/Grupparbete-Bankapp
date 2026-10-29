@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Security.Principal;
 
 namespace Grupparbete_Bankapp
 {
@@ -31,8 +30,7 @@ namespace Grupparbete_Bankapp
             string ownerUsername,
             string accountName,
             Currency currency,
-            BankAccountType accountType,
-            Account User)
+            BankAccountType accountType)
         {
             BankAccount newAccount = new BankAccount(
                 nextAccountNumber,
@@ -44,7 +42,6 @@ namespace Grupparbete_Bankapp
             );
 
             BankAccounts.Add(newAccount);
-            User.AddBankAccount(newAccount);
             nextAccountNumber++;
 
             return newAccount;
@@ -65,18 +62,20 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        public void ShowAccountsForUser(Account username)
+        public void ShowAccountsForUser(string username)
         {
-            foreach (BankAccount account in username.GetBankAccountList())
+            foreach (BankAccount account in BankAccounts)
             {
-                Console.WriteLine(
+                if (account.OwnerUsername == username)
+                {
+                    Console.WriteLine(
                         $"Account: {account.Number} | " +
                         $"Name: {account.Name} | " +
                         $"Type: {account.AccountType} | " +
                         $"Currency: {account.Currency} | " +
                         $"Balance: {account.Balance}"
                     );
-
+                }
             }
         }
     }
