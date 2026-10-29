@@ -33,7 +33,7 @@ namespace Grupparbete_Bankapp
             loanMenu = new LoanMenu(loanService);
         }
 
-        public void ShowMenu(Account activeAccount)
+        public void ShowMenu()
         {
             bool running = true;
 
@@ -112,7 +112,7 @@ namespace Grupparbete_Bankapp
                        
                         // here i show the accounts of the user who logged in 
 
-                        bank.ShowAccountsForUser(user.GetUserName());
+                        bank.ShowAccountsForUser(user);
                         break;
 
                     case "5":
@@ -120,8 +120,9 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "6":
-                        // This method also checks that the user is admin.
-                        systemAccount.CreateAccountAsAdmin();
+                        // we have this code elsewhere 
+                        //// This method also checks that the user is admin.
+                        //systemAccount.CreateAccountAsAdmin();
                         break;
 
                     case "7":
@@ -176,7 +177,7 @@ namespace Grupparbete_Bankapp
             Console.ResetColor();
 
             // the new account belongs to the user who logged in
-            string username = user.GetUserName();
+            string username = user.GetFullName();
 
             Console.Write("Enter account name: ");
             string accountName = transactionInput.ReadText("");
@@ -239,7 +240,8 @@ namespace Grupparbete_Bankapp
                 username,
                 accountName,
                 currency.Value,
-                accountType.Value
+                accountType.Value,
+                user
             );
 
             Console.WriteLine();
@@ -264,7 +266,7 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            bank.ShowAccountsForUser(user.GetUserName());
+            bank.ShowAccountsForUser(user);
 
             int accountNumber = transactionInput.ReadNumber("Account number: ");
 
