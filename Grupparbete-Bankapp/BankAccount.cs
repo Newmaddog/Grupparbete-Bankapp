@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 namespace Grupparbete_Bankapp
 {
@@ -48,7 +49,12 @@ namespace Grupparbete_Bankapp
             Currency = currency;
             balance = startingBalance;
         }
-
+        private readonly List<Loan> loans = new();
+        public IReadOnlyList<Loan> Loans => loans;
+        public void AddLoan(Loan loan)
+        {
+            loans.Add(loan);
+        }
         // Deposits money if the amount is positive
         public bool Deposit(decimal amount)
         {
@@ -61,21 +67,6 @@ namespace Grupparbete_Bankapp
             return true;
         }
 
-
-        //here i work one year interest at 2%
-        public decimal GetSavingsInterest(decimal amount)
-        {
-            if (AccountType != BankAccountType.Savings || amount <= 0) 
-            {
-                return 0;
-            }
-
-            return amount * 2 / 100;
-
-        }
-
-
-
         // Withdraws money if the amount is positive and the balance is sufficient
         public bool Withdraw(decimal amount)
         {
@@ -87,5 +78,6 @@ namespace Grupparbete_Bankapp
             balance = balance - amount;
             return true;
         }
+
     }
 }

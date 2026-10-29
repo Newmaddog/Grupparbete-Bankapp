@@ -12,9 +12,7 @@ namespace Grupparbete_Bankapp
             _loanservice = loanService;
         }
 
-
-        //small loaning menu that is integrated into the bank main menu
-        public void ShowLoanMenu(BankAccount account)
+        public void ShowLoanMenu(BankAccount account, decimal currentLoans)
         {
             bool running = true;
             while (running)
@@ -28,7 +26,7 @@ namespace Grupparbete_Bankapp
 
                 switch (choice)
                 {
-                    case "1": _loanservice.RequestLoan(account);
+                    case "1": _loanservice.RequestLoan(account, currentLoans);
                         break;
 
                     case "2": ShowLoans(account);
@@ -43,11 +41,9 @@ namespace Grupparbete_Bankapp
                 }
             }
         }
-
-        //views all your current loans.
         private void ShowLoans(BankAccount account)
         {
-            var loans = _loanservice.GetLoans(account.Number);
+            var loans = _loanservice.GetLoans(account);
             Console.WriteLine("====MY LOANS====");
 
             if(loans.Count == 0)
