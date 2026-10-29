@@ -7,75 +7,93 @@ namespace Grupparbete_Bankapp
     {
         static void Main(string[] args)
         {
-            InterestCalculator interestCalculator = new InterestCalculator();
-            LoanService loanService = new LoanService(interestCalculator);
-            LoanMenu loanMenu = new LoanMenu(loanService);
-            // Skapa systemkontot
-            SystemAccount systemAccount = new SystemAccount();
+            Start();
+        }
+
+        private static void Start()
+        {
+            // Skapa banken och transaktionssystemet.
             Bank bank = new Bank("CHAS BANK");
-            BankMeny bankMeny = new BankMeny(bank);
-            Account? ActiveAccount = null;
+            LoanService loanService = new LoanService(new InterestCalculator());
+            TransactionInput input = new TransactionInput(bank.Transactions);
+            SystemAccount systemAccount = new SystemAccount();
 
+            Account? activeAccount = null;
+            bool running = true;
 
-            int choice = -1;
-            while (true)
+            // Visa bankens logotyp.
+            BankMeny.ShowLogo();
+
+            while (running && !input.EndOfInput)
             {
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("========== CHAS BANK ==========");
+                Console.ResetColor();
 
+                Console.WriteLine("1. Show Account List");
+                Console.WriteLine("2. Log in");
+                Console.WriteLine("3. Create Account");
+                Console.WriteLine("4. Bank Menu");
+                Console.WriteLine("0. Exit");
 
-                Console.WriteLine("choice!!");
-                Console.WriteLine("1. Show Account List\n2. Log in\n3. Create Account\n4. Bank Meny");
-                int.TryParse(Console.ReadLine(), out choice);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                string choice = input.ReadText("Choose an option: ");
+                Console.ResetColor();
 
                 switch (choice)
                 {
-                    case 1:
+                    case "1":
                         systemAccount.AccountList();
                         break;
 
-                    case 2:
-                        ActiveAccount = systemAccount.LogInAccount();
+                    case "2":
+                        activeAccount = systemAccount.LogInAccount();
+
+                        if (systemAccount.SystemBlockStatus())
+                        {
+                            Console.WriteLine(
+                                "Too many failed attempts. System blocked!"
+                            );
+
+                            Environment.Exit(1);
+                        }
                         break;
-                    case 3:
+
+                    case "3":
                         systemAccount.CreateAccountAsAdmin();
                         break;
 
-                    case 4:
-
-                        if (ActiveAccount is null)
+                    case "4":
+                        if (activeAccount == null)
                         {
-                            Console.WriteLine("Log in first");
-                            continue;
+                            Console.WriteLine("Log in first.");
+                            break;
                         }
-                        // Skapa menyn och skicka in banken
-                        bankMeny.ShowMenu(ActiveAccount);
-                        break; 
+
+                        BankMeny bankMeny = new BankMeny(
+                            bank,
+                            activeAccount,
+                            systemAccount,
+                            loanService
+                        );
+
+                        bankMeny.ShowMenu(activeAccount);
+                        break;
+
+                    case "0":
+                        running = false;
+                        break;
+
                     default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Please choose a valid option.");
+                        Console.ResetColor();
                         break;
                 }
-
-
-
-
-
-                if (systemAccount.SystemBlockStatus())
-                {
-                    Console.WriteLine("Error to many attempt system block!!!");
-                    System.Environment.Exit(1);
-                }
-
-                // Skapa banken
-
-               
-
-
-                // Starta menyn
-
             }
 
-
-
-
-
+            Console.WriteLine("Thank you for using CHAS BANK!");
         }
     }
 }
