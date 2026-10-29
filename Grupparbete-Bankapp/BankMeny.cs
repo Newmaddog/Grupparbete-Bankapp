@@ -33,7 +33,7 @@ namespace Grupparbete_Bankapp
             loanMenu = new LoanMenu(loanService);
         }
 
-        public void ShowMenu(Account activeAccount)
+        public void ShowMenu()
         {
             bool running = true;
 
@@ -54,10 +54,10 @@ namespace Grupparbete_Bankapp
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("  1. Show bank information");
                 Console.WriteLine("  2. Open new account");
-                
+
                 if (bank.Transactions.IsAdmin(user) == true)
-                { 
-                    Console.WriteLine("  3. Show all bank accounts"); 
+                {
+                    Console.WriteLine("  3. Show all bank accounts");
                 }
 
                 Console.WriteLine("  4. Show my accounts");
@@ -74,6 +74,8 @@ namespace Grupparbete_Bankapp
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("  0. Log out");
                 Console.ResetColor();
+
+
 
                 Console.WriteLine("--------------------------------");
 
@@ -109,10 +111,10 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "4":
-                       
+
                         // here i show the accounts of the user who logged in 
 
-                        bank.ShowAccountsForUser(user.GetUserName());
+                        bank.ShowAccountsForUser(user);
                         break;
 
                     case "5":
@@ -120,8 +122,9 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "6":
-                        // This method also checks that the user is admin.
-                        systemAccount.CreateAccountAsAdmin();
+                        // we have this code elsewhere 
+                        //// This method also checks that the user is admin.
+                        //systemAccount.CreateAccountAsAdmin();
                         break;
 
                     case "7":
@@ -176,7 +179,7 @@ namespace Grupparbete_Bankapp
             Console.ResetColor();
 
             // the new account belongs to the user who logged in
-            string username = user.GetUserName();
+            string username = user.GetFullName();
 
             Console.Write("Enter account name: ");
             string accountName = transactionInput.ReadText("");
@@ -239,7 +242,8 @@ namespace Grupparbete_Bankapp
                 username,
                 accountName,
                 currency.Value,
-                accountType.Value
+                accountType.Value,
+                user
             );
 
             Console.WriteLine();
@@ -264,7 +268,7 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            bank.ShowAccountsForUser(user.GetUserName());
+            bank.ShowAccountsForUser(user);
 
             int accountNumber = transactionInput.ReadNumber("Account number: ");
 
@@ -318,7 +322,7 @@ namespace Grupparbete_Bankapp
                 return;
             }
             Console.WriteLine("Select the account you want to loan for.");
-            foreach(BankAccount account in accounts)
+            foreach (BankAccount account in accounts)
             {
                 Console.WriteLine($"Account: {account.Number}");
                 Console.WriteLine($"Name: {account.Name}");
@@ -333,7 +337,7 @@ namespace Grupparbete_Bankapp
             }
 
             BankAccount? selectedAccount = null;
-            foreach(BankAccount account in accounts)
+            foreach (BankAccount account in accounts)
             {
                 if (account.Number == accountNumber)
                 {

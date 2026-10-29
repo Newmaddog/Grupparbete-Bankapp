@@ -78,7 +78,7 @@ namespace Grupparbete_Bankapp
                             loanService
                         );
 
-                        bankMeny.ShowMenu(activeAccount);
+                        bankMeny.ShowMenu();
                         break;
 
                     case "0":
