@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Grupparbete_Bankapp
 {
-    internal class Account
+    public class Account
     {
-        private string UserName;
-        private string Password;
-        private string FullName;
-        private AccountType AccountType;
+        public string UserName;
+        public string Password;
+        public string FullName;
+        public AccountType AccountType;
 
-        List<Bank> BankAccountList = new List<Bank>();
+        List<BankAccount> BankAccountList = new List<BankAccount>();
 
 
         public Account(string userName, string password, string fullName, AccountType accountType)
@@ -23,17 +23,14 @@ namespace Grupparbete_Bankapp
             AccountType = accountType;
         }
 
-        public void AddBankAccount(Bank bank)
+        public void AddBankAccount(BankAccount bank)
         {
             BankAccountList.Add(bank);
         }
 
-        public void GetBankAccountList()
+        public List<BankAccount> GetBankAccountList()
         {
-            foreach (Bank bank in BankAccountList)
-            {
-                Console.WriteLine(bank);
-            }
+            return BankAccountList;
         }
 
 

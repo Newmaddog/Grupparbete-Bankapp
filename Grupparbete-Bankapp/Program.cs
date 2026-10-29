@@ -46,9 +46,21 @@ namespace Grupparbete_Bankapp
                             Console.WriteLine("Log in first");
                             continue;
                         }
-                        // Skapa menyn och skicka in banken
-                        bankMeny.ShowMenu(ActiveAccount);
-                        break; 
+
+                        BankMeny bankMeny = new BankMeny(
+                            bank,
+                            activeAccount,
+                            systemAccount,
+                            loanService
+                        );
+
+                        bankMeny.ShowMenu();
+                        break;
+
+                    case "0":
+                        running = false;
+                        break;
+
                     default:
                         break;
                 }
