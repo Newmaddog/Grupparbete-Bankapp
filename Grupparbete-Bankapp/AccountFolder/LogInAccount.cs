@@ -7,7 +7,7 @@ namespace Grupparbete_Bankapp
     internal class LogInAccount
     {
 
-        public Account? LogIn(List<Account> accountList , ref bool systemBlock)
+        public Account? LogIn(List<Account> accountList, ref bool systemBlock)
         {
             Account? account = FindAccountWithUserName(accountList);
             if (account is null)
@@ -18,7 +18,7 @@ namespace Grupparbete_Bankapp
                 WelcomeMessage(account);
                 return account;
             }
-            return null ;
+            return null;
         }
 
         public Account? FindAccountWithUserName(List<Account> accountList)

@@ -30,7 +30,8 @@ namespace Grupparbete_Bankapp
             string ownerUsername,
             string accountName,
             Currency currency,
-            BankAccountType accountType)
+            BankAccountType accountType,
+            Account User)
         {
             BankAccount newAccount = new BankAccount(
                 nextAccountNumber,
@@ -42,6 +43,7 @@ namespace Grupparbete_Bankapp
             );
 
             BankAccounts.Add(newAccount);
+            User.AddBankAccount(newAccount);
             nextAccountNumber++;
 
             return newAccount;
@@ -62,20 +64,18 @@ namespace Grupparbete_Bankapp
             }
         }
 
-        public void ShowAccountsForUser(string username)
+        public void ShowAccountsForUser(Account username)
         {
-            foreach (BankAccount account in BankAccounts)
+            foreach (BankAccount account in username.GetBankAccountList())
             {
-                if (account.OwnerUsername == username)
-                {
-                    Console.WriteLine(
-                        $"Account: {account.Number} | " +
-                        $"Name: {account.Name} | " +
-                        $"Type: {account.AccountType} | " +
-                        $"Currency: {account.Currency} | " +
-                        $"Balance: {account.Balance}"
-                    );
-                }
+                Console.WriteLine(
+                    $"Account: {account.Number} | " +
+                    $"Name: {account.Name} | " +
+                    $"Type: {account.AccountType} | " +
+                    $"Currency: {account.Currency} | " +
+                    $"Balance: {account.Balance}"
+                );
+
             }
         }
     }

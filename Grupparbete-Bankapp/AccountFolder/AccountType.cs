@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Grupparbete_Bankapp
 {
-    enum AccountType
+    public enum AccountType
     {
         User = 1,
         Admin,

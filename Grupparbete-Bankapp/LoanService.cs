@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Channels;
@@ -14,8 +15,6 @@ namespace Grupparbete_Bankapp
         {
             _interestCalculator = interestCalculator;
         }
-
-        //This will change slightly when bank account class is created so will improve upon later.
 
         //method for checking if you can load an amount 5x of your current balance
         public bool CanLoan(decimal moneyInBank, decimal currentLoans, decimal newLoan)
@@ -42,29 +41,60 @@ namespace Grupparbete_Bankapp
 
         }
 
-        //stores the loaning details
-        public Loan? ApplyForLoan(decimal moneyInBank, decimal currentLoans, decimal amount, decimal yearlyInterestRate, int months)
+        //counts up existing loans the account has.
+        public decimal GetCurrentLoans(int accountNumber)
         {
-            if (!CanLoan(moneyInBank, currentLoans, amount))
+            decimal total = 0;
 
+            foreach(Loan loan in _loans)
+            {
+                if(loan.AccountNumber == accountNumber)
+                {
+                    total += loan.Amount;
+                }
+            }
+            return total;
+        }
+
+        //stores the loaning details and creates the loan.
+        public Loan? ApplyForLoan(BankAccount account, decimal amount, decimal yearlyInterestRate, int months)
+        {
+            decimal currentLoans = GetCurrentLoans(account.Number);
+            if (!CanLoan(account.Balance, currentLoans, amount))
+            {
                 return null;
+            }
 
-            var loan = new Loan(amount, yearlyInterestRate, months, _interestCalculator);
-
+            var loan = new Loan(account.Number, amount, yearlyInterestRate, months, _interestCalculator);
+            if (!account.Deposit(amount))
+            {
+                return null;
+            }
             _loans.Add(loan);
 
             return loan;
-
+                
         }
 
+       
+
         //method that retrieves the total loans
-        public List<Loan> GetLoans()
+        public List<Loan> GetLoans(int accountNumber)
         {
-            return new List<Loan>(_loans);
+            List<Loan> accountLoans = new List<Loan>();
+
+            foreach(Loan loan in _loans)
+            {
+                if(loan.AccountNumber == accountNumber)
+                {
+                    accountLoans.Add(loan);
+                }
+            }
+            return accountLoans;
         }
 
         //method for a user requesting a loan.
-        public void RequestLoan(decimal moneyInBank, decimal currentLoans)
+        public void RequestLoan(BankAccount account)
         {
             Console.Write("How much would you like to borrow? ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal requestedLoan))
@@ -87,7 +117,7 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            Loan? loan = ApplyForLoan(moneyInBank, currentLoans, requestedLoan, interestRate, months);
+            Loan? loan = ApplyForLoan(account, requestedLoan, interestRate, months);
             if (loan == null)
             {
                 return;
@@ -95,6 +125,8 @@ namespace Grupparbete_Bankapp
 
             
             Console.WriteLine("Loan approved!");
+            Console.WriteLine($"ID: {loan.Id}");
+            Console.WriteLine($"Account: {loan.AccountNumber}");
             Console.WriteLine($"Loan amount: {loan.Amount:N2}");
             Console.WriteLine($"Loan duration in months: {loan.TotalMonths}");
             Console.WriteLine($"Interest rate: {loan.YearlyInterestRate}%");
