@@ -9,7 +9,7 @@ namespace Grupparbete_Bankapp
         public int Number { get; set; }
 
         // Account owner
-        public string OwnerUsername { get; set; }
+        public string OwnerFullName { get; set; }
 
         // Account name
         public string Name { get; set; }
@@ -35,14 +35,14 @@ namespace Grupparbete_Bankapp
         // Creates a new bank account
         public BankAccount(
             int number,
-            string ownerUsername,
+            string ownerFullName,
             string name,
             BankAccountType accountType,
             Currency currency,
             decimal startingBalance)
         {
             Number = number;
-            OwnerUsername = ownerUsername;
+            OwnerFullName = ownerFullName;
             Name = name;
             AccountType = accountType;
             Currency = currency;

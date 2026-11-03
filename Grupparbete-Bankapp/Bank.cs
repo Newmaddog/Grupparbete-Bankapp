@@ -55,7 +55,7 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine(
                     $"Account: {account.Number} | " +
-                    $"Owner: {account.OwnerUsername} | " +
+                    $"Owner: {account.OwnerFullName} | " +
                     $"Name: {account.Name} | " +
                     $"Type: {account.AccountType} | " +
                     $"Currency: {account.Currency} | " +
