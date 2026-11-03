@@ -25,10 +25,8 @@ namespace Grupparbete_Bankapp
             {
                 service.ProcessTransactions(DateTime.Now);
 
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"TRANSACTIONS - {user.GetUserName()}");
-                Console.ResetColor();
+                // Clear the old menu before showing the choices again.
+                input.ShowScreen($"TRANSACTIONS - {user.GetUserName()}");
 
                 // Displays the next processing time in hours and minutes, for example 14:15.
                 Console.WriteLine($"Next processing: {service.GetNextProcessingTime():HH:mm}");
@@ -54,7 +52,9 @@ namespace Grupparbete_Bankapp
                 switch (choice)
                 {
                     case "1":
+                        input.ShowScreen("MY ACCOUNTS");
                         ShowAccounts(user);
+                        input.WaitForBack();
                         break;
 
                     case "2":
@@ -62,7 +62,9 @@ namespace Grupparbete_Bankapp
                         break;
 
                     case "3":
+                        input.ShowScreen("TRANSACTION HISTORY");
                         ShowHistory(user);
+                        input.WaitForBack();
                         break;
 
                     case "4":
@@ -74,7 +76,7 @@ namespace Grupparbete_Bankapp
                         break;
 
                     default:
-                        Console.WriteLine("Invalid choice. Please try again.");
+                        input.ShowError("Please choose one of the options.");
                         break;
                 }
             }
@@ -97,16 +99,39 @@ namespace Grupparbete_Bankapp
             }
         }
 
+        // Enter a transfer or choose 0 to go back without saving it.
         private void Transfer(Account user)
         {
+            input.ShowScreen("TRANSFER MONEY");
             ShowAccounts(user);
 
+            if (service.GetAccounts(user).Count == 0)
+            {
+                input.WaitForBack();
+                return;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("0. Cancel");
+
             int fromNumber = input.ReadNumber("From account number: ");
+
+            // Stop here if the user chooses 0 or input has ended.
+            if (fromNumber == 0 || input.EndOfInput == true)
+            {
+                return;
+            }
+
             int toNumber = input.ReadNumber("To account number: ");
+
+            if (toNumber == 0 || input.EndOfInput == true)
+            {
+                return;
+            }
 
             decimal amount = input.ReadDecimal("Amount in the sender's currency: ");
 
-            if (input.EndOfInput == true)
+            if (amount == 0 || input.EndOfInput == true)
             {
                 return;
             }
@@ -119,9 +144,11 @@ namespace Grupparbete_Bankapp
             }
             else
             {
-                Console.WriteLine(
-                    "The transfer could not be added. Check the accounts, account ownership, amount, available balance, and today's exchange rates.");
+                Console.WriteLine("The transfer could not be added. Check the accounts, account ownership, amount, available balance, and today's exchange rates.");
             }
+
+            // Keep the result on screen until the user chooses 0.
+            input.WaitForBack();
         }
 
         // Here I show deposits and transfers that are waiting done or failed.
@@ -159,35 +186,45 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine();
             }
         }
-        
 
-        // Only users with the admin role can update exchange rates.
+
+        // Only users with the admin role can update exchange rates or choose 0 to cancel.
         private void UpdateRates(Account user)
         {
+            input.ShowScreen("EXCHANGE RATES");
+
             if (service.IsAdmin(user) == false)
             {
-                Console.WriteLine("Only administrators can update exchange rates.");
+                input.ShowError("Only administrators can update exchange rates.");
                 return;
             }
 
+            Console.WriteLine("0. Cancel");
+
             decimal euro = input.ReadDecimal("How many SEK is 1 EUR worth? ");
+
+            if (euro == 0 || input.EndOfInput == true)
+            {
+                return;
+            }
+
             decimal dollar = input.ReadDecimal("How many SEK is 1 USD worth? ");
 
-            if (input.EndOfInput == true)
+            if (dollar == 0 || input.EndOfInput == true)
             {
                 return;
             }
 
             if (service.UpdateRates(user, euro, dollar) == true)
             {
-                Console.WriteLine(
-                    $"Exchange rates saved for {service.GetRatesDate():yyyy-MM-dd}.");
+                Console.WriteLine($"Exchange rates saved for {service.GetRatesDate():yyyy-MM-dd}.");
             }
             else
             {
-                Console.WriteLine(
-                    "Exchange rates must be between 0.0001 and 1000 SEK.");
+                Console.WriteLine("Exchange rates must be between 0.0001 and 1000 SEK.");
             }
+
+            input.WaitForBack();
         }
     }
 }
