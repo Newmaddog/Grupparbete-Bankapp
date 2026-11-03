@@ -41,6 +41,9 @@ namespace Grupparbete_Bankapp
                 currency,
                 0m
             );
+            
+            // Two users can have the same full name, so I save the username too.
+            newAccount.OwnerUsername = User.GetUserName();
 
             BankAccounts.Add(newAccount);
             User.AddBankAccount(newAccount);
