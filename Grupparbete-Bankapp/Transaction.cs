@@ -20,6 +20,8 @@ namespace Grupparbete_Bankapp
         public DateTime ExecuteAt { get; set; }
         public TransactionStatus Status { get; set; }
 
+        public bool IsDeposit { get; set; }
+
         public Transaction(int id, string username, int fromAccount, int toAccount, decimal amount, decimal receivedAmount, Currency fromCurrency, Currency toCurrency, DateTime createdAt, DateTime excuteAt)
         {
             Id = id;
@@ -35,7 +37,10 @@ namespace Grupparbete_Bankapp
 
             ExecuteAt = excuteAt;
 
+            IsDeposit = false;
+
             Status = TransactionStatus.Pending;
+
 
 
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -44,7 +45,7 @@ namespace Grupparbete_Bankapp
 
             foreach (BankAccount account in accounts)
             {
-                if (account.OwnerUsername == user.GetUserName())
+                if (account.OwnerFullName == user.GetFullName())
                 {
                     result.Add(account);
 
@@ -136,7 +137,7 @@ namespace Grupparbete_Bankapp
 
         }
 
-        // Here I check that the amount is over 0, no more than 100000 and has up to two decimals.
+        // Here I check that the amount is more than 0 but no more than 10000 and has no more than two numbers after the dot.
         private bool AmountIsValid(decimal amount)
         {
             if (amount <= 0 || amount > 10000)
@@ -233,7 +234,7 @@ namespace Grupparbete_Bankapp
             BankAccount from = accounts[fromIndex];
             BankAccount to = accounts[toIndex];
 
-            if (from.OwnerUsername != user.GetUserName() || amount > GetAvailableBalance(from))
+            if (from.OwnerFullName != user.GetFullName() || amount > GetAvailableBalance(from))
             {
                 return false;
             }
@@ -255,6 +256,45 @@ namespace Grupparbete_Bankapp
 
             return true;
         }
+
+        // Here I put a deposit in the queue for the next quarter.
+        public bool Deposit(Account user, int accountNumber, decimal amount)
+        {
+
+            DateTime createdAt = DateTime.Now;
+            ProcessTransactions(createdAt);
+
+            if (AmountIsValid(amount) == false)
+            {
+                return false;
+            }
+
+            int index = FindAccountIndex(accountNumber);
+
+            if (index == -1)
+            {
+                return false;
+            }
+
+            BankAccount account = accounts[index];
+
+            if (account.OwnerFullName != user.GetFullName())
+            {
+                return false;
+            }
+
+            DateTime executeAt = NextQuarter(createdAt);
+
+            // A deposit has no sender account, so I use 0.
+            Transaction transaction = new Transaction(transactions.Count + 1, user.GetUserName(), 0, accountNumber, amount, amount, account.Currency, account.Currency, createdAt, executeAt);
+            transaction.IsDeposit = true;
+
+            waiting.Enqueue(transaction);
+            transactions.Add(transaction);
+            return true;
+
+        }
+
 
 
         // Here I move the money for waiting transfers when their planned time has arrived.
@@ -281,9 +321,32 @@ namespace Grupparbete_Bankapp
                 int toIndex = FindAccountIndex(transaction.ToAccount);
 
                 bool valid = true;
-                // Here I check that both accounts exist before taking money from the sender's account.
+                // Deposits only need the account receiving the money.
+                if (transaction.IsDeposit == true)
+                {
+                    if (toIndex == -1)
+                    {
+                        valid = false;
+                    }
+                    else
+                    {
+                        BankAccount to = accounts[toIndex];
 
-                if (fromIndex == -1 || toIndex == -1)
+                        if (to.OwnerFullName != transaction.Username || to.Currency != transaction.ToCurrency) 
+                        {
+                            valid = false;
+                        }
+
+                        else if (to.Deposit(transaction.Amount) == false)
+                        {
+                            valid = false;
+                        }
+                    }
+
+
+                }
+
+                else if (fromIndex == -1 || toIndex == -1)
                 {
                     valid = false;
                 }
@@ -292,7 +355,7 @@ namespace Grupparbete_Bankapp
                     BankAccount from = accounts[fromIndex];
                     BankAccount to = accounts[toIndex];
 
-                    if (from.OwnerUsername != transaction.Username || from.Currency != transaction.FromCurrency || to.Currency != transaction.ToCurrency)
+                    if (from.OwnerFullName != transaction.Username || from.Currency != transaction.FromCurrency || to.Currency != transaction.ToCurrency)
                     {
                         valid = false;
                     }
@@ -338,7 +401,7 @@ namespace Grupparbete_Bankapp
 
                 if (fromIndex != -1)
                 {
-                    if (accounts[fromIndex].OwnerUsername == user.GetUserName())
+                    if (accounts[fromIndex].OwnerFullName == user.GetFullName())
                     {
                         ownsAccount = true;
                     }
@@ -346,7 +409,7 @@ namespace Grupparbete_Bankapp
 
                 if (toIndex != -1)
                 {
-                    if (accounts[toIndex].OwnerUsername == user.GetUserName())
+                    if (accounts[toIndex].OwnerFullName == user.GetFullName())
                         ownsAccount = true;
                 }
                 if (ownsAccount == true)

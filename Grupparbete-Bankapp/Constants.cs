@@ -17,14 +17,9 @@ namespace Grupparbete_Bankapp
         }
         public static void WriteExitText()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Use one of this words to cancel: ");
-            foreach (string word in NotUsableWords)
-            {
-                Console.Write($"{word}, ");
-            }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("To cancel, type Exit or Cancel.");
             Console.ResetColor();
-            Console.WriteLine();
         }
     }
 }

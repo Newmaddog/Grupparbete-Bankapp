@@ -9,7 +9,7 @@ namespace Grupparbete_Bankapp
         public int Number { get; set; }
 
         // Account owner
-        public string OwnerUsername { get; set; }
+        public string OwnerFullName { get; set; }
 
         // Account name
         public string Name { get; set; }
@@ -35,14 +35,14 @@ namespace Grupparbete_Bankapp
         // Creates a new bank account
         public BankAccount(
             int number,
-            string ownerUsername,
+            string ownerFullName,
             string name,
             BankAccountType accountType,
             Currency currency,
             decimal startingBalance)
         {
             Number = number;
-            OwnerUsername = ownerUsername;
+            OwnerFullName = ownerFullName;
             Name = name;
             AccountType = accountType;
             Currency = currency;
@@ -60,6 +60,21 @@ namespace Grupparbete_Bankapp
             balance = balance + amount;
             return true;
         }
+
+
+        //here i work one year interest at 2%
+        public decimal GetSavingsInterest(decimal amount)
+        {
+            if (AccountType != BankAccountType.Savings || amount <= 0) 
+            {
+                return 0;
+            }
+
+            return amount * 2 / 100;
+
+        }
+
+
 
         // Withdraws money if the amount is positive and the balance is sufficient
         public bool Withdraw(decimal amount)
