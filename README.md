@@ -114,4 +114,4 @@ Choose **0** to go back.
 
 During a transfer or exchange-rate update, **0 cancels without saving**.
 
-Results stay on screen
+Results stay on screen until the user chooses 0. The menu then clears the old screen.
