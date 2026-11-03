@@ -45,7 +45,7 @@ namespace Grupparbete_Bankapp
 
             foreach (BankAccount account in accounts)
             {
-                if (account.OwnerFullName == user.GetFullName())
+                if (account.OwnerUsername == user.GetUserName())
                 {
                     result.Add(account);
 
@@ -234,7 +234,7 @@ namespace Grupparbete_Bankapp
             BankAccount from = accounts[fromIndex];
             BankAccount to = accounts[toIndex];
 
-            if (from.OwnerFullName != user.GetFullName() || amount > GetAvailableBalance(from))
+            if (from.OwnerUsername != user.GetUserName() || amount > GetAvailableBalance(from))
             {
                 return false;
             }
@@ -278,7 +278,7 @@ namespace Grupparbete_Bankapp
 
             BankAccount account = accounts[index];
 
-            if (account.OwnerFullName != user.GetFullName())
+            if (account.OwnerUsername != user.GetUserName())
             {
                 return false;
             }
@@ -332,7 +332,7 @@ namespace Grupparbete_Bankapp
                     {
                         BankAccount to = accounts[toIndex];
 
-                        if (to.OwnerFullName != transaction.Username || to.Currency != transaction.ToCurrency) 
+                        if (to.OwnerUsername != transaction.Username || to.Currency != transaction.ToCurrency)
                         {
                             valid = false;
                         }
@@ -355,7 +355,7 @@ namespace Grupparbete_Bankapp
                     BankAccount from = accounts[fromIndex];
                     BankAccount to = accounts[toIndex];
 
-                    if (from.OwnerFullName != transaction.Username || from.Currency != transaction.FromCurrency || to.Currency != transaction.ToCurrency)
+                    if (from.OwnerUsername != transaction.Username || from.Currency != transaction.FromCurrency || to.Currency != transaction.ToCurrency)
                     {
                         valid = false;
                     }
@@ -401,7 +401,7 @@ namespace Grupparbete_Bankapp
 
                 if (fromIndex != -1)
                 {
-                    if (accounts[fromIndex].OwnerFullName == user.GetFullName())
+                    if (accounts[fromIndex].OwnerUsername == user.GetUserName())
                     {
                         ownsAccount = true;
                     }
@@ -409,8 +409,7 @@ namespace Grupparbete_Bankapp
 
                 if (toIndex != -1)
                 {
-                    if (accounts[toIndex].OwnerFullName == user.GetFullName())
-                        ownsAccount = true;
+                    if (accounts[toIndex].OwnerUsername == user.GetUserName())ownsAccount = true;
                 }
                 if (ownsAccount == true)
                 {

@@ -8,8 +8,11 @@ namespace Grupparbete_Bankapp
         // Account number
         public int Number { get; set; }
 
-        // Account owner
+        // The owner's full name is shown in the account list.
         public string OwnerFullName { get; set; }
+
+        // The username tells us which user owns this account.
+        public string OwnerUsername { get; set; } = "";
 
         // Account name
         public string Name { get; set; }
