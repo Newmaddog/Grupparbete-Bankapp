@@ -7,9 +7,11 @@ namespace Grupparbete_Bankapp
     internal class LoanMenu
     {
         private readonly LoanService _loanservice;
-        public LoanMenu(LoanService loanService)
+        private readonly TransactionInput _transactionInput;
+        public LoanMenu(LoanService loanService, TransactionInput transactionInput)
         {
             _loanservice = loanService;
+            _transactionInput = transactionInput;
         }
 
 
@@ -17,14 +19,19 @@ namespace Grupparbete_Bankapp
         public void ShowLoanMenu(BankAccount account)
         {
             bool running = true;
-            while (running)
+            while (running && !_transactionInput.EndOfInput)
             {
                 Console.WriteLine("====LOAN MENU====");
                 Console.WriteLine("1. Apply for loan.");
                 Console.WriteLine("2. View my loans.");
                 Console.WriteLine("3. Back to main menu.");
 
-                string? choice = Console.ReadLine();
+                string? choice = _transactionInput.ReadText("");
+
+                if (_transactionInput.EndOfInput)
+                {
+                    return;
+                }
 
                 switch (choice)
                 {

@@ -11,10 +11,14 @@ namespace Grupparbete_Bankapp
     {
         private readonly InterestCalculator _interestCalculator;
         private readonly List<Loan> _loans = new();
-        public LoanService(InterestCalculator interestCalculator)
+        private readonly TransactionInput _transactionInput;
+        public LoanService(InterestCalculator interestCalculator, TransactionInput transactionInput)
         {
             _interestCalculator = interestCalculator;
+            _transactionInput = transactionInput;
+           
         }
+
 
         //method for checking if you can load an amount 5x of your current balance
         public bool CanLoan(decimal moneyInBank, decimal currentLoans, decimal newLoan)
@@ -29,6 +33,12 @@ namespace Grupparbete_Bankapp
             if (newLoan <= 0)
             {
                 Console.WriteLine("The loan amount must be greater than zero.");
+                return false;
+            }
+
+            if (moneyInBank == 0)
+            {
+                Console.WriteLine("You need to have money on the account to loan.");
                 return false;
             }
             if(currentLoans + newLoan > moneyInBank * 5)
@@ -99,14 +109,14 @@ namespace Grupparbete_Bankapp
             const decimal interestRate = 2m;
 
             Console.Write("How much would you like to borrow? ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal requestedLoan))
+            if (!decimal.TryParse(_transactionInput.ReadText(""), out decimal requestedLoan))
             {
                 Console.WriteLine("Invalid loan amount");
                 return;
             }
 
-            Console.WriteLine("Enter the loan duration(in months): ");
-            if(!int.TryParse(Console.ReadLine(), out int months) || months < 1 || months > 60)
+            Console.WriteLine("Enter the loan duration in months(1-60): ");
+            if(!int.TryParse(_transactionInput.ReadText(""), out int months) || months < 1 || months > 60)
             {
                 Console.WriteLine("invalid loan duration, loan duration can only be from 1-60 months.");
                 return;
