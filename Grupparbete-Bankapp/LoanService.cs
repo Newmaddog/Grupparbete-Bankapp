@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Channels;
+
 
 namespace Grupparbete_Bankapp
 {
@@ -43,7 +40,7 @@ namespace Grupparbete_Bankapp
             }
             if(currentLoans + newLoan > moneyInBank * 5)
             {
-                Console.WriteLine("Loan denied, you have exceeded your maximum loan limit.");
+                Console.WriteLine("Loan denied, your total loans can not exceed five times your account balance.");
                 return false;
             }
 
@@ -128,16 +125,15 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            
+            Console.WriteLine("----------------");
             Console.WriteLine("Loan approved!");
-            Console.WriteLine($"ID: {loan.Id}");
             Console.WriteLine($"Account: {loan.AccountNumber}");
             Console.WriteLine($"Loan amount: {loan.Amount:N2}");
             Console.WriteLine($"Loan duration in months: {loan.TotalMonths}");
             Console.WriteLine($"Interest rate: {loan.YearlyInterestRate}%");
             Console.WriteLine($"Total repayment: {loan.TotalRepayment:N2}");
             Console.WriteLine($"Total interest: {loan.TotalInterest:N2}");
-
+            Console.WriteLine("----------------");
         }
     }
 }
