@@ -7,9 +7,12 @@ namespace Grupparbete_Bankapp
     internal class LoanMenu
     {
         private readonly LoanService _loanservice;
-        public LoanMenu(LoanService loanService)
+        private TransactionInput input;
+
+        public LoanMenu(LoanService loanService, TransactionInput input)
         {
             _loanservice = loanService;
+            this.input = input;
         }
 
 
@@ -24,11 +27,20 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine("2. View my loans.");
                 Console.WriteLine("3. Back to main menu.");
 
-                string? choice = Console.ReadLine();
+                string choice = input.ReadText("");
+                if (input.EndOfInput == true)
+                {
+                    return;
+                }
 
                 switch (choice)
                 {
-                    case "1": _loanservice.RequestLoan(account);
+                    case "1":
+                        _loanservice.RequestLoan(account, input);
+                        if (input.EndOfInput == true)
+                        {
+                            return;
+                        }
                         break;
 
                     case "2": ShowLoans(account);

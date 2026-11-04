@@ -6,6 +6,13 @@ namespace Grupparbete_Bankapp
 {
     internal class LogInAccount
     {
+        private TransactionInput input;
+
+        public LogInAccount(TransactionInput input)
+        {
+            this.input = input;
+        }
+
 
         public Account? LogIn(List<Account> accountList, ref bool systemBlock)
         {
@@ -30,7 +37,12 @@ namespace Grupparbete_Bankapp
             {
                 Constants.WriteExitText();
                 Console.Write($"Write your UserName please: ");
-                tempUserName = Console.ReadLine() ?? "";
+                tempUserName = input.ReadText("");
+
+                if (input.EndOfInput == true)
+                {
+                    return null;
+                }
 
                 if (Constants.IsNotUsableWordsUtilize(tempUserName))
                 {
@@ -67,7 +79,12 @@ namespace Grupparbete_Bankapp
             {
                 Constants.WriteExitText();
                 Console.Write($"\nLog in with Password: ");
-                attemptPasword = Console.ReadLine() ?? "";
+                attemptPasword = input.ReadText("");
+
+                if (input.EndOfInput == true)
+                {
+                    return false;
+                }
 
                 if (Constants.IsNotUsableWordsUtilize(attemptPasword))
                 {
@@ -99,7 +116,7 @@ namespace Grupparbete_Bankapp
             Console.WriteLine("All your information: ");
             Console.WriteLine(account);
             Console.WriteLine("\nPress Enter to continue");
-            Console.ReadLine();
+            input.ReadText("");
         }
     }
 }
