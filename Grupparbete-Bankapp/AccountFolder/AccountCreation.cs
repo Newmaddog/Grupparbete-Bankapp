@@ -171,7 +171,7 @@ namespace Grupparbete_Bankapp
                     return null;
                 }
 
-                if (!int.TryParse(Console.ReadLine(), out menuChoice))
+                if (!int.TryParse(choice, out menuChoice))
                 {
                     Console.WriteLine("Invalid input. Press Enter to try again.");
                     input.ReadText("");

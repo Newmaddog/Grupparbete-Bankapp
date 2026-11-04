@@ -104,7 +104,7 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            if (!decimal.TryParse(Console.ReadLine(), out decimal requestedLoan))
+            if (!decimal.TryParse(amountText, out decimal requestedLoan))
             {
                 Console.WriteLine("Invalid loan amount");
                 return;
