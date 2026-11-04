@@ -96,17 +96,12 @@ namespace Grupparbete_Bankapp
         //method for a user requesting a loan.
         public void RequestLoan(BankAccount account)
         {
+            const decimal interestRate = 2m;
+
             Console.Write("How much would you like to borrow? ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal requestedLoan))
             {
                 Console.WriteLine("Invalid loan amount");
-                return;
-            }
-
-            Console.WriteLine("Enter yearly interest rate(in %): ");
-            if(!decimal.TryParse(Console.ReadLine(), out decimal interestRate) || interestRate <= 0 || interestRate > 100)
-            {
-                Console.WriteLine("Invalid interest, it can only be from 1-100");
                 return;
             }
 
