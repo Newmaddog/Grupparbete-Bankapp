@@ -30,7 +30,7 @@ namespace Grupparbete_Bankapp
 
             //Creates loaning service and a menu for it
             loanService = new LoanService(new InterestCalculator());
-            loanMenu = new LoanMenu(loanService);
+            loanMenu = new LoanMenu(loanService, transactionInput);
         }
 
         public void ShowMenu()
