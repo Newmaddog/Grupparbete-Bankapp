@@ -115,3 +115,46 @@ Choose **0** to go back.
 During a transfer or exchange-rate update, **0 cancels without saving**.
 
 Results stay on screen until the user chooses 0. The menu then clears the old screen.
+
+---
+
+## Bank - Mustaf
+
+This part handles the bank and its bank accounts.
+
+### Files
+
+**Bank.cs**
+
+The `Bank` class keeps track of all bank accounts.
+
+It stores the bank's name and has a list of all bank accounts.
+
+It also gives each new account a unique account number, starting from **1001**.
+
+**Main methods:**
+
+- `Bank(string name)`: Creates the bank and sets its name.
+- `ShowInfo()`: Shows the bank's name.
+- `OpenNewAccount(...)`: Creates a new bank account with the customer's information. The starting balance is 0. The account is added to the list and given a new account number.
+- `ShowAllAccounts()`: Shows all bank accounts.
+- `ShowAccountsForUser(string username)`: Shows only the accounts belonging to a specific customer.
+
+The class also creates the `TransactionService` and connects it to the bank's account list.
+
+**BankMeny.cs**
+
+The `BankMeny` class handles the bank menu that the customer sees after logging in.
+
+It shows different options and lets the customer choose what to do.
+
+**Main functions:**
+
+- Shows the bank menu.
+- Displays bank information.
+- Lets the customer open a new bank account.
+- Shows the customer's bank accounts.
+- Opens the transaction menu.
+- Lets the customer go back or exit.
+
+When the customer chooses transactions, `BankMeny` opens `TransactionMenu` and passes the logged-in customer's username and the bank's `TransactionService`.
