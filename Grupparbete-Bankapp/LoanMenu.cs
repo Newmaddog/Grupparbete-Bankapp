@@ -8,15 +8,13 @@ namespace Grupparbete_Bankapp
     {
         private readonly LoanService _loanservice;
         private readonly TransactionInput _transactionInput;
-        public LoanMenu(LoanService loanService, TransactionInput transactionInput)
-        private TransactionInput input;
+        
 
         public LoanMenu(LoanService loanService, TransactionInput input)
         {
             _loanservice = loanService;
-            _loanservice = transactionInput
-            _transactionInput = transactionInput;
-            this.input = input;
+            _transactionInput = input;
+            
         }
 
 
@@ -31,11 +29,7 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine("2. View my loans.");
                 Console.WriteLine("3. Back to main menu.");
 
-                string choice = input.ReadText("");
-                if (input.EndOfInput == true)
-                {
-                    return;
-                }
+                
                 string? choice = _transactionInput.ReadText("");
 
                 if (_transactionInput.EndOfInput)
@@ -46,8 +40,8 @@ namespace Grupparbete_Bankapp
                 switch (choice)
                 {
                     case "1":
-                        _loanservice.RequestLoan(account, input);
-                        if (input.EndOfInput == true)
+                        _loanservice.RequestLoan(account, _transactionInput);
+                        if (_transactionInput.EndOfInput == true)
                         {
                             return;
                         }

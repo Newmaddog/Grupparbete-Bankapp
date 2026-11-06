@@ -7,13 +7,10 @@ namespace Grupparbete_Bankapp
     internal class LoanService
     {
         private readonly InterestCalculator _interestCalculator;
-        private readonly List<Loan> _loans = new();
-        private readonly TransactionInput _transactionInput;
+        private readonly List<Loan> _loans = new List<Loan>();
         public LoanService(InterestCalculator interestCalculator, TransactionInput transactionInput)
         {
             _interestCalculator = interestCalculator;
-            _transactionInput = transactionInput;
-           
         }
 
 
@@ -106,7 +103,6 @@ namespace Grupparbete_Bankapp
             const decimal interestRate = 2m;
 
             Console.Write("How much would you like to borrow? ");
-            if (!decimal.TryParse(_transactionInput.ReadText(""), out decimal requestedLoan))
 
             string amountText = input.ReadText("");
             if (input.EndOfInput == true)
@@ -120,22 +116,8 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            Console.WriteLine("Enter the loan duration in months(1-60): ");
-            if(!int.TryParse(_transactionInput.ReadText(""), out int months) || months < 1 || months > 60)
-            Console.WriteLine("Enter yearly interest rate(in %): ");
-            string interestText = input.ReadText("");
-            if (input.EndOfInput == true)
-            {
-                return;
-            }
 
-            if (!decimal.TryParse(interestText, out decimal interestRate) || interestRate <= 0 || interestRate > 100)
-            {
-                Console.WriteLine("Invalid interest, it can only be from 1-100");
-                return;
-            }
-
-            Console.WriteLine("Enter the loan duration(in months): ");
+            Console.WriteLine("Enter the loan duration in months (1-60): ");
             string durationText = input.ReadText("");
             if (input.EndOfInput == true)
             {

@@ -11,9 +11,11 @@ namespace Grupparbete_Bankapp
             // Skapa banken och transaktionssystemet.
             Bank bank = new Bank("CHAS BANK");
             TransactionInput input = new TransactionInput(bank.Transactions);
+
             LoanService loanService = new LoanService(new InterestCalculator(), input);
 
             SystemAccount systemAccount = new SystemAccount(input);
+
 
             Account? activeAccount = null;
             bool running = true;

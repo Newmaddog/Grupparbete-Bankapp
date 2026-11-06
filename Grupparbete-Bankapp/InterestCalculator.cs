@@ -22,7 +22,7 @@ namespace Grupparbete_Bankapp
 
             if (months < 1 || months > 60)
             {
-                throw new ArgumentOutOfRangeException("Time has to be between 1-600 months");
+                throw new ArgumentOutOfRangeException("Time has to be between 1-60 months");
             }
 
             decimal years = months / 12m;
