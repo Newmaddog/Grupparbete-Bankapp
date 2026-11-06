@@ -2,28 +2,27 @@
 
 I detta grupparbete ska ni utveckla en bankapp enligt objektorienterade principer, där ni arbetar tillsammans från en backlog med läraren som produktägare.
 
-//Erico
-public class Account
-{
-Variabler: String FullName, string UserName, string Password, (Enum)AccountType AcountType, List<BankAccount> BankAccountList;
+## System Account - Erico
 
-Functions:
+**SystemAccount.cs**
 
-My functions mainly consist of getters and setters for the variables within the class, along with an AddBankAccount function that adds a BankAccount to the list.
+This part's job was to create new accounts and also to have a login system with security so that if login fails too many times, the system gets blocked.
+It is divided into three classes. One is the SystemAccount, which holds a list with saved accounts and blocks the system after too many failed login attempts.
 
-I have also overridden the ToString() function to display the specific information I want when using Console.WriteLine(Account).
+**AccountCreation.cs**
 
-}
+The second is AccountCreation, whose purpose is to create an account for the system to save.
+It checks whether the account you are logged in as is an admin before proceeding. It asks for the user's username, password, full name and what type of account it is.
+Then it checks whether the username already exists. If it does, it says so and asks for another username. After all the information is set, it shows it to the user along with the information and asks them to confirm to proceed.
+If the user is not happy, they can change whichever part they want to change and redo it.
+When done, it returns a complete Account back to the SystemAccount.
 
-internal class AccountCreation
-{
-Purpose: The purpose of this class is to create an account. When the user chooses to create an account, the system calls this class and starts collecting the user's username, password, and full name. Once all the required information has been provided, the class moves on to the next function, called ConfirmCreateAccount, which checks whether all the information is correct. If everything is correct, the function returns an Account object.
-Variabler: none;
+**LogInAccount.cs**
 
-Function: public Account? CreateAccount(List<Account> accountList), private string SetUserName(List<Account> accountList),
-private string SetPassword(), private string SetFullName(), private AccountType SetAccountType(),
-private Account? ConfirmCreateAccount(string userName, string password,string fullName, AccountType accountType,List<Account>accountList)
-}
+The third part is the login session. It works simply: the system asks for a username, and if that username exists, it asks for a password.
+The user gets three attempts to enter the correct password.
+If all three fail, the system terminates and closes the terminal.
+If the password is correct, the account is returned to the SystemAccount, after which the program goes back to the menu with the user logged in and ready to continue.
 
 
 ---
