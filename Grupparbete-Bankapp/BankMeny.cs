@@ -10,7 +10,8 @@ namespace Grupparbete_Bankapp
 
 
         private readonly LoanService loanService;
-        
+        private readonly LoanMenu loanMenu;
+
         private readonly Account user;
         private TransactionInput transactionInput;
         private SystemAccount systemAccount;
@@ -22,13 +23,14 @@ namespace Grupparbete_Bankapp
             // here i keep the user who logged in
             this.user = user;
             this.systemAccount = systemAccount;
-            
+            this.loanService = loanService;
 
             // Here I let transfers run while the user types or waits.
             transactionInput = new TransactionInput(bank.Transactions);
 
             //Creates loaning service and a menu for it
-            this.loanService = loanService;
+            loanService = new LoanService(new InterestCalculator());
+            loanMenu = new LoanMenu(loanService, transactionInput);
         }
 
         public void ShowMenu()
@@ -347,7 +349,7 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine("Invalid account.");
                 return;
             }
-            LoanMenu loanMenu = new LoanMenu(loanService, transactionInput);
+
             loanMenu.ShowLoanMenu(selectedAccount);
 
         }

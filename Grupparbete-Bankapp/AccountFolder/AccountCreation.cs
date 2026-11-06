@@ -7,6 +7,12 @@ namespace Grupparbete_Bankapp
 {
     internal class AccountCreation
     {
+        private TransactionInput input;
+
+        public AccountCreation(TransactionInput input)
+        {
+            this.input = input;
+        }
         public Account? CreateAccount(List<Account> accountList)
         {
             Console.WriteLine("Creating new Account");
@@ -15,9 +21,28 @@ namespace Grupparbete_Bankapp
             string fullName = "";
             AccountType accountType;
             userName = SetUserName(accountList);
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
             passWord = SetPassword();
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
             fullName = SetFullName();
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
+
             accountType = SetAccountType();
+            if (input.EndOfInput == true)
+            {
+                return null;
+            }
             Account? account = ConfirmCreateAccount(userName, passWord, fullName, accountType, accountList);
             return account;
         }
@@ -31,7 +56,12 @@ namespace Grupparbete_Bankapp
                 //not sure yet if i will use it
                 //Constants.WriteExitText();
                 Console.Write("UserName: ");
-                userName = Console.ReadLine() ?? "";
+                userName = input.ReadText("");
+                if (input.EndOfInput == true)
+                {
+                    return "";
+                }
+
                 if (Constants.IsNotUsableWordsUtilize(userName))
                 {
                     Console.Clear();
@@ -61,7 +91,11 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine("PassWord, password most be longer then 4");
                 Console.Write("Password: ");
-                passWord = Console.ReadLine() ?? "";
+                passWord = input.ReadText("");
+                if (input.EndOfInput == true)
+                {
+                    return "";
+                }
 
                 if (passWord.Length < 5)
                 {
@@ -80,7 +114,11 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine("Write your full name");
                 Console.Write("Full name: ");
-                fullName = Console.ReadLine() ?? "";
+                fullName = input.ReadText("");
+                if (input.EndOfInput == true)
+                {
+                    return "";
+                }
                 if (fullName == "")
                 {
                     Console.WriteLine("can't be empty");
@@ -98,8 +136,13 @@ namespace Grupparbete_Bankapp
             {
                 Console.WriteLine("1: User\n2: Admin\n3: Owner");
 
-                enumSet = Enum.TryParse(Console.ReadLine(), out accountType)
-                    && Enum.IsDefined(typeof(AccountType), accountType);
+                string choice = input.ReadText("");
+                enumSet = Enum.TryParse(choice, out accountType) && Enum.IsDefined(typeof(AccountType), accountType);
+
+                if (input.EndOfInput == true)
+                {
+                    return accountType;
+                }
 
                 if (!enumSet)
                 {
@@ -122,10 +165,20 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine($"UserName: {userName}\nPassword: {password}\nFullName: {fullName}\nAccountType: {accountType}\n");
                 Console.WriteLine($"press 0 to cancel\npress 1 to confirm Account \n2: change UserName\n3: change password\n4: change fullname\n5 change AccountType");
 
-                if (!int.TryParse(Console.ReadLine(), out menuChoice))
+                string choice = input.ReadText("");
+                if (input.EndOfInput == true)
+                {
+                    return null;
+                }
+
+                if (!int.TryParse(choice, out menuChoice))
                 {
                     Console.WriteLine("Invalid input. Press Enter to try again.");
-                    Console.ReadLine();
+                    input.ReadText("");
+                    if (input.EndOfInput == true)
+                    {
+                        return null;
+                    }
                     Console.Clear();
                     menuChoice = -1;
                     continue;
@@ -145,6 +198,10 @@ namespace Grupparbete_Bankapp
                     case 5:
                         accountType = SetAccountType();
                         break;
+                }
+                if (input.EndOfInput == true)
+                {
+                    return null;
                 }
 
             } while (menuChoice is not (0 or 1));

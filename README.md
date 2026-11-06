@@ -158,3 +158,20 @@ It shows different options and lets the customer choose what to do.
 - Lets the customer go back or exit.
 
 When the customer chooses transactions, `BankMeny` opens `TransactionMenu` and passes the logged-in customer's username and the bank's `TransactionService`.
+
+
+## Robin - Loans
+
+Features:
+
+**Loan Application** – Users can apply for a loan by entering the desired amount and the intended duration (in months); the system then calculates the interest for the loan.
+
+**Eligibility Check** – A method verifies whether a user is eligible to apply for a loan based on specific criteria (e.g., having a balance of 0 SEK in the account).
+
+**Interest Calculation** (Savings Accounts and Loans) – A method that calculates interest by taking the loan amount, the annual interest rate (as a percentage), and the loan duration into account.
+
+**Loan Limit** – A feature that ensures a user cannot borrow more than five times their total account balance; if this limit is exceeded, the program displays an error message.
+
+**Existing Loan Overview** – Users can view a list of all their current loans, providing a clear financial overview of their accounts and any outstanding debt.
+
+**Bank Account Integration** – Once all features are complete and the bank classes have been developed, the code is integrated into the bank’s system. This links the loan functionality to the bank account and also the transactions systems, allowing users to access and utilize the loan system whenever a bank account is created.

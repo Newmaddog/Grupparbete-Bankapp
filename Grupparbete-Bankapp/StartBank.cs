@@ -12,7 +12,8 @@ namespace Grupparbete_Bankapp
             Bank bank = new Bank("CHAS BANK");
             TransactionInput input = new TransactionInput(bank.Transactions);
             LoanService loanService = new LoanService(new InterestCalculator(), input);
-            SystemAccount systemAccount = new SystemAccount();
+
+            SystemAccount systemAccount = new SystemAccount(input);
 
             Account? activeAccount = null;
             bool running = true;

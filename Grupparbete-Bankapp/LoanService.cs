@@ -101,12 +101,20 @@ namespace Grupparbete_Bankapp
         }
 
         //method for a user requesting a loan.
-        public void RequestLoan(BankAccount account)
+        public void RequestLoan(BankAccount account, TransactionInput input)
         {
             const decimal interestRate = 2m;
 
             Console.Write("How much would you like to borrow? ");
             if (!decimal.TryParse(_transactionInput.ReadText(""), out decimal requestedLoan))
+
+            string amountText = input.ReadText("");
+            if (input.EndOfInput == true)
+            {
+                return;
+            }
+
+            if (!decimal.TryParse(amountText, out decimal requestedLoan))
             {
                 Console.WriteLine("Invalid loan amount");
                 return;
@@ -114,6 +122,27 @@ namespace Grupparbete_Bankapp
 
             Console.WriteLine("Enter the loan duration in months(1-60): ");
             if(!int.TryParse(_transactionInput.ReadText(""), out int months) || months < 1 || months > 60)
+            Console.WriteLine("Enter yearly interest rate(in %): ");
+            string interestText = input.ReadText("");
+            if (input.EndOfInput == true)
+            {
+                return;
+            }
+
+            if (!decimal.TryParse(interestText, out decimal interestRate) || interestRate <= 0 || interestRate > 100)
+            {
+                Console.WriteLine("Invalid interest, it can only be from 1-100");
+                return;
+            }
+
+            Console.WriteLine("Enter the loan duration(in months): ");
+            string durationText = input.ReadText("");
+            if (input.EndOfInput == true)
+            {
+                return;
+            }
+
+            if (!int.TryParse(durationText, out int months) || months < 1 || months > 60)
             {
                 Console.WriteLine("invalid loan duration, loan duration can only be from 1-60 months.");
                 return;
