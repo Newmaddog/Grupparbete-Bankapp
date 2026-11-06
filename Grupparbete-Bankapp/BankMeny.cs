@@ -28,8 +28,6 @@ namespace Grupparbete_Bankapp
             // Here I let transfers run while the user types or waits.
             transactionInput = new TransactionInput(bank.Transactions);
 
-            //Creates loaning service and a menu for it
-            loanService = new LoanService(new InterestCalculator());
             loanMenu = new LoanMenu(loanService, transactionInput);
         }
 
@@ -325,6 +323,7 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine($"Account: {account.Number}");
                 Console.WriteLine($"Name: {account.Name}");
                 Console.WriteLine($"Balance: {account.Balance} {account.Currency}");
+                Console.WriteLine("----------------------------");
             }
 
             int accountNumber = transactionInput.ReadNumber("Enter account number: ");

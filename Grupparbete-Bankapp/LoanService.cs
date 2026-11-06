@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Channels;
+
 
 namespace Grupparbete_Bankapp
 {
     internal class LoanService
     {
         private readonly InterestCalculator _interestCalculator;
-        private readonly List<Loan> _loans = new();
-        public LoanService(InterestCalculator interestCalculator)
+        private readonly List<Loan> _loans = new List<Loan>();
+        public LoanService(InterestCalculator interestCalculator, TransactionInput transactionInput)
         {
             _interestCalculator = interestCalculator;
         }
+
 
         //method for checking if you can load an amount 5x of your current balance
         public bool CanLoan(decimal moneyInBank, decimal currentLoans, decimal newLoan)
@@ -31,9 +29,15 @@ namespace Grupparbete_Bankapp
                 Console.WriteLine("The loan amount must be greater than zero.");
                 return false;
             }
+
+            if (moneyInBank == 0)
+            {
+                Console.WriteLine("You need to have money on the account to loan.");
+                return false;
+            }
             if(currentLoans + newLoan > moneyInBank * 5)
             {
-                Console.WriteLine("Loan denied, you have exceeded your maximum loan limit.");
+                Console.WriteLine("Loan denied, your total loans can not exceed five times your account balance.");
                 return false;
             }
 
@@ -96,6 +100,8 @@ namespace Grupparbete_Bankapp
         //method for a user requesting a loan.
         public void RequestLoan(BankAccount account, TransactionInput input)
         {
+            const decimal interestRate = 2m;
+
             Console.Write("How much would you like to borrow? ");
 
             string amountText = input.ReadText("");
@@ -110,20 +116,8 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            Console.WriteLine("Enter yearly interest rate(in %): ");
-            string interestText = input.ReadText("");
-            if (input.EndOfInput == true)
-            {
-                return;
-            }
 
-            if (!decimal.TryParse(interestText, out decimal interestRate) || interestRate <= 0 || interestRate > 100)
-            {
-                Console.WriteLine("Invalid interest, it can only be from 1-100");
-                return;
-            }
-
-            Console.WriteLine("Enter the loan duration(in months): ");
+            Console.WriteLine("Enter the loan duration in months (1-60): ");
             string durationText = input.ReadText("");
             if (input.EndOfInput == true)
             {
@@ -142,16 +136,15 @@ namespace Grupparbete_Bankapp
                 return;
             }
 
-            
+            Console.WriteLine("----------------");
             Console.WriteLine("Loan approved!");
-            Console.WriteLine($"ID: {loan.Id}");
             Console.WriteLine($"Account: {loan.AccountNumber}");
             Console.WriteLine($"Loan amount: {loan.Amount:N2}");
             Console.WriteLine($"Loan duration in months: {loan.TotalMonths}");
             Console.WriteLine($"Interest rate: {loan.YearlyInterestRate}%");
             Console.WriteLine($"Total repayment: {loan.TotalRepayment:N2}");
             Console.WriteLine($"Total interest: {loan.TotalInterest:N2}");
-
+            Console.WriteLine("----------------");
         }
     }
 }

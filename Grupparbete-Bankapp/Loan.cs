@@ -6,9 +6,8 @@ namespace Grupparbete_Bankapp
 {
     internal class Loan
     {
-        //public Guid will be replaced by user guid later when connecting all the parts of the bankapp
+        
         public Guid Id { get; } = Guid.NewGuid();
-
         public int AccountNumber { get; }
         public decimal Amount { get; }
         public decimal YearlyInterestRate { get; }
